@@ -8,11 +8,11 @@
     <title>Garda Dumai Kota</title>
 </head>
 <body>
-    <div style="background:#ffeb3b; color:#b71c1c; padding:5px; font-size:12px; font-weight:bold;"><marquee scrollamount="5">⚠️ WASPADA: Potensi Hujan Lebat & Pasang Keling di Pesisir Dumai Kota Malam Ini.</marquee></div>
+    <div class="marquee"><marquee scrollamount="5">⚠️ WASPADA PERINGATAN DINI RIAU: Potensi hujan lebat dan angin kencang di wilayah Dumai Kota.</marquee></div>
     <div class="app-header">
         <img src="assets/img/garda-dumaikota.png" alt="Logo">
         <div style="text-align:center;">
-            <div style="font-size:10px; opacity:0.8;">PEMERINTAH KOTA DUMAI</div>
+            <div style="font-size:10px; opacity:0.8; letter-spacing:1px;">PEMERINTAH KOTA DUMAI</div>
             <div style="font-size:18px; font-weight:bold;">GARDA DUMAI KOTA</div>
         </div>
         <i class="fas fa-bell"></i>
@@ -31,11 +31,11 @@
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active"><i class="fas fa-house-chimney"></i>Home</a>
         <a href="modul/peta/index.html" class="nav-item"><i class="fas fa-map-marked-alt"></i>Peta</a>
-        <a href="modul/aksi/index.html" class="nav-item"><i class="fas fa-circle-exclamation"></i>Aksi</a>
+        <a href="modul/aksi/index.html" class="nav-item"><i class="fas fa-circle-exclamation"></i>Lapor</a>
         <a href="modul/admin/login.html" class="nav-item"><i class="fas fa-user-shield"></i>Petugas</a>
     </nav>
     <script>
-        async function fetchAPI() {
+        async function fetchDash() {
             try {
                 const r = await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec");
                 const d = await r.json();
@@ -47,7 +47,7 @@
                 document.getElementById('gempa').innerText = `M ${g.Magnitude} | ${g.Wilayah}`;
             } catch(e) {}
         }
-        fetchAPI();
+        fetchDash();
     </script>
 </body>
 </html>
