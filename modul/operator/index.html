@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../css/style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head><body>
+    <div class="app-header"><div>OPERATOR LAPOR</div><i class="fas fa-sign-out-alt" onclick="location.href='../admin/login.html'"></i></div>
+    <div class="container">
+        <div class="card"><b>Petugas:</b> <span id="op-name"></span></div>
+        <div class="card">
+            <button class="btn-main" onclick="track()">KUNCI GPS</button><p id="gps-msg" style="text-align:center; font-size:11px;">Belum dikunci</p>
+            <select id="kat">
+                <option>🌊 Banjir Rob</option><option>🗑️ Sampah</option><option>👮 Kamtibmas</option><option>🔥 Kebakaran</option>
+                <option>💡 Lampu Jalan</option><option>🛣️ Jalan Rusak</option><option>🌳 Pohon Tumbang</option>
+            </select>
+            <textarea id="ket" placeholder="Keterangan..."></textarea>
+            <input type="file" id="foto" capture="camera">
+            <button class="btn-main" id="btnL" onclick="lapor()">KIRIM LAPORAN</button>
+        </div>
+    </div><script src="operator.js"></script></body></html>

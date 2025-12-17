@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../css/style.css"><title>Login</title></head>
+<body style="background:#002171; display:flex; align-items:center; height:100vh;">
+    <div class="container"><div class="card" style="text-align:center;"><h3>LOGIN GARDA</h3><input type="text" id="u" placeholder="User"><input type="password" id="p" placeholder="Pass"><button class="btn-main" onclick="auth()">MASUK</button></div></div>
+    <script>
+        function auth() {
+            const u = document.getElementById('u').value; const p = document.getElementById('p').value;
+            if(u === "camat" && p === "dksiaga") { localStorage.setItem("role","admin"); localStorage.setItem("user_label","CAMAT"); location.href="index.html"; }
+            else if(p === "pantaudk") { localStorage.setItem("role","operator"); localStorage.setItem("user_label",u.toUpperCase()); location.href="../operator/index.html"; }
+            else alert("Salah!");
+        }
+    </script></body></html>

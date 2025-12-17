@@ -1,52 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Garda Dumai Kota</title>
-</head>
-<body>
-    <div style="background:#ffeb3b; color:#b71c1c; padding:5px; font-size:12px; font-weight:bold;"><marquee>⚠️ SIAGA PASANG KELING: Potensi banjir rob di wilayah pesisir Dumai Kota.</marquee></div>
-    <div class="app-header">
-        <img src="assets/img/garda-dumaikota.png" style="width:50px;">
-        <div style="text-align:center;">
-            <div style="font-size:10px; opacity:0.8;">PEMERINTAH KOTA DUMAI</div>
-            <div style="font-size:18px; font-weight:bold;">GARDA DUMAI KOTA</div>
-        </div>
-        <i class="fas fa-bell"></i>
-    </div>
-    <div class="container">
-        <div class="card" style="border-left:6px solid var(--accent);">
-            <h4 style="margin:0; color:var(--accent);"><i class="fas fa-house-crack"></i> Info Gempa BMKG</h4>
-            <div id="gempa" style="font-size:13px; font-weight:bold; margin-top:5px;">Memuat data...</div>
-        </div>
-        <div style="display:flex; gap:12px;">
-            <div class="card" style="flex:1; text-align:center;"><h2 id="st-proses" style="color:#f39c12; margin:0">0</h2><small>PROSES</small></div>
-            <div class="card" style="flex:1; text-align:center;"><h2 id="st-selesai" style="color:#2ecc71; margin:0">0</h2><small>DONE</small></div>
-        </div>
-        <a href="modul/aksi/index.html" class="btn-main"><i class="fas fa-bolt"></i> AKSI CEPAT & SOS</a>
-    </div>
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active"><i class="fas fa-home"></i>Home</a>
-        <a href="modul/peta/index.html" class="nav-item"><i class="fas fa-map-marked-alt"></i>Peta</a>
-        <a href="modul/aksi/index.html" class="nav-item"><i class="fas fa-circle-exclamation"></i>Aksi</a>
-        <a href="modul/admin/login.html" class="nav-item"><i class="fas fa-user-shield"></i>Petugas</a>
-    </nav>
+<html lang="id"><head><meta charset="UTF-8"><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><title>Garda Dumai Kota</title></head><body>
+    <div style="background:#ffeb3b; color:red; padding:5px;"><marquee>⚠️ SIAGA BANJIR ROB RIAU</marquee></div>
+    <div class="app-header"><img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png" style="width:40px;"><div>GARDA DUMAI KOTA</div><i class="fas fa-bell"></i></div>
+    <div class="container"><div class="card" style="border-left:5px solid red;"><b>BMKG:</b> <span id="g">Memuat...</span></div>
+    <div style="display:flex; gap:10px;"><div class="card" style="flex:1; text-align:center;"><h2 id="p">0</h2>PROSES</div><div class="card" style="flex:1; text-align:center;"><h2 id="s">0</h2>DONE</div></div>
+    <a href="modul/aksi/index.html" class="btn-main">DARURAT & SOS</a></div>
+    <nav class="bottom-nav"><a href="index.html" class="nav-item active"><i class="fas fa-home"></i>Home</a><a href="modul/peta/index.html" class="nav-item"><i class="fas fa-map"></i>Peta</a><a href="modul/admin/login.html" class="nav-item"><i class="fas fa-user-shield"></i>Admin</a></nav>
     <script>
-        async function fetchDash() {
-            try {
-                const r = await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec");
-                const d = await r.json();
-                document.getElementById('st-proses').innerText = d.laporan.filter(i => i[6] !== 'Selesai' && i[6] !== 'Status').length;
-                document.getElementById('st-selesai').innerText = d.laporan.filter(i => i[6] === 'Selesai').length;
-                const gRes = await fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json');
-                const gData = await gRes.json();
-                document.getElementById('gempa').innerText = `M ${gData.Infogempa.gempa.Magnitude} | ${gData.Infogempa.gempa.Wilayah}`;
-            } catch(e) {}
-        }
-        fetchDash();
-    </script>
-</body>
-</html>
+        async function load() {
+            const r = await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec"); const d = await r.json();
+            document.getElementById('p').innerText = d.laporan.filter(i => i[6] !== 'Selesai' && i[6] !== 'Status').length;
+            document.getElementById('s').innerText = d.laporan.filter(i => i[6] === 'Selesai').length;
+            const g = await fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json'); const gd = await g.json();
+            document.getElementById('g').innerText = gd.Infogempa.gempa.Magnitude + " SR - " + gd.Infogempa.gempa.Wilayah;
+        } load();
+    </script></body></html>
