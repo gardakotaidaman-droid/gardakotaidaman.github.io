@@ -8,9 +8,7 @@
     <title>Garda Dumai Kota</title>
 </head>
 <body>
-    <div style="background:#ffeb3b; color:#b71c1c; padding:5px; font-size:12px; font-weight:bold;">
-        <marquee scrollamount="5">⚠️ WASPADA PASANG KELING: Wilayah Pesisir Dumai Kota Siaga Banjir Rob Malam Ini!</marquee>
-    </div>
+    <div style="background:#ffeb3b; color:#b71c1c; padding:5px; font-size:12px; font-weight:bold;"><marquee scrollamount="5">⚠️ WASPADA: Potensi Hujan Lebat & Pasang Keling di Pesisir Dumai Kota Malam Ini.</marquee></div>
     <div class="app-header">
         <img src="assets/img/garda-dumaikota.png" alt="Logo">
         <div style="text-align:center;">
@@ -20,8 +18,8 @@
         <i class="fas fa-bell"></i>
     </div>
     <div class="container">
-        <div class="card" style="border-left:6px solid #d32f2f;">
-            <h4 style="margin:0; color:#d32f2f;"><i class="fas fa-house-crack"></i> Info Gempa BMKG</h4>
+        <div class="card" style="border-left:6px solid var(--accent);">
+            <h4 style="margin:0; color:var(--accent);"><i class="fas fa-house-crack"></i> Info Gempa BMKG</h4>
             <div id="gempa" style="font-size:13px; font-weight:bold; margin-top:5px;">Memuat data...</div>
         </div>
         <div style="display:flex; gap:12px; margin-bottom:15px;">
@@ -38,14 +36,16 @@
     </nav>
     <script>
         async function fetchAPI() {
-            const r = await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec");
-            const d = await r.json();
-            document.getElementById('st-proses').innerText = d.laporan.filter(i => i[6] !== 'Selesai' && i[6] !== 'Status').length;
-            document.getElementById('st-selesai').innerText = d.laporan.filter(i => i[6] === 'Selesai').length;
-            const gRes = await fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json');
-            const gData = await gRes.json();
-            const g = gData.Infogempa.gempa;
-            document.getElementById('gempa').innerText = `M ${g.Magnitude} | ${g.Wilayah}`;
+            try {
+                const r = await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec");
+                const d = await r.json();
+                document.getElementById('st-proses').innerText = d.laporan.filter(i => i[6] !== 'Selesai' && i[6] !== 'Status').length;
+                document.getElementById('st-selesai').innerText = d.laporan.filter(i => i[6] === 'Selesai').length;
+                const gRes = await fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json');
+                const gData = await gRes.json();
+                const g = gData.Infogempa.gempa;
+                document.getElementById('gempa').innerText = `M ${g.Magnitude} | ${g.Wilayah}`;
+            } catch(e) {}
         }
         fetchAPI();
     </script>
