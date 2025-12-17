@@ -6,11 +6,11 @@ async function loadPeta() {
     const d = await r.json();
     d.laporan.forEach((item, idx) => {
         if(idx === 0) return;
-        const coords = item[4].match(/(-?\d+\.\d+),(-?\d+\.\d+)/);
+        const coords = item[4].match(/q=(-?\d+\.\d+),(-?\d+\.\d+)/);
         if(coords) {
-            let color = item[6] === 'Selesai' ? 'green' : (item[6] === 'Penanganan' ? 'orange' : 'red');
-            L.circleMarker([coords[1], coords[2]], { color: color, radius: 8 }).addTo(map)
-                .bindPopup(`<b>${item[2]}</b><br>${item[3]}<br><img src="${item[5]}" style="width:100px">`);
+            let color = item[6] === 'Selesai' ? 'green' : 'red';
+            L.circleMarker([coords[1], coords[2]], {color: color}).addTo(map)
+                .bindPopup(`<b>${item[1]}</b><br>${item[3]}<br><img src="${item[5]}" style="width:100px">`);
         }
     });
 }

@@ -1,3 +1,0 @@
-.emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.btn-red { background: #b71c1c; color: white; padding: 12px; border-radius: 12px; text-decoration: none; font-size: 13px; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.track-box { padding: 15px; background: #e3f2fd; border-radius: 15px; border: 1px solid #bbdefb; font-size: 13px; margin-bottom: 15px; }

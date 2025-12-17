@@ -7,18 +7,18 @@
 </head>
 <body>
     <div class="app-header">
-        <div style="font-weight:bold;">OPERATOR LAPOR</div>
+        <div style="font-weight:bold;">OPERATOR PANEL</div>
         <i class="fas fa-sign-out-alt" onclick="localStorage.clear(); location.href='../admin/login.html'"></i>
     </div>
     <div class="container">
-        <div class="card" style="background:#e8f5e9; border:1px solid #2e7d32;">
+        <div class="card" style="background:#e8f5e9;">
             <small>Petugas:</small><h4 id="op-name" style="margin:0;">-</h4>
         </div>
         <div class="card">
-            <select id="kat"><option>Banjir Rob</option><option>Drainase Tersumbat</option><option>Sampah</option></select>
-            <textarea id="ket" placeholder="Keterangan kejadian..."></textarea>
+            <select id="kat"><option>Banjir Rob</option><option>Sampah</option><option>Kamtibmas</option></select>
+            <textarea id="ket" placeholder="Detail kejadian..."></textarea>
             <input type="file" id="foto" capture="camera">
-            <button class="btn-main" id="btnLapor" style="margin-top:15px;" onclick="lapor()">🚀 KIRIM LAPORAN</button>
+            <button class="btn-main" id="btnLapor" style="margin-top:15px;" onclick="kirim()">KIRIM LAPORAN</button>
         </div>
     </div>
     <script src="operator.js"></script>
