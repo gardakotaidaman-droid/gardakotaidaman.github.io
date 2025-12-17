@@ -2,56 +2,32 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/style.css"><link rel="stylesheet" href="aksi.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Aksi Cepat - Garda Kota</title>
+    <title>Aksi Cepat</title>
 </head>
 <body>
     <div class="app-header">
-        <button class="back-btn" onclick="window.location.href='../../index.html'"><i class="fas fa-chevron-left"></i> Kembali</button>
-        <div style="font-weight:bold;">AKSI CEPAT</div>
-        <div style="width:50px;"></div>
+        <a href="../../index.html" style="color:white;"><i class="fas fa-chevron-left"></i></a>
+        <div style="font-weight:bold;">AKSI & DARURAT</div>
+        <div style="width:20px;"></div>
     </div>
-
     <div class="container">
         <div class="card">
-            <h3><i class="fas fa-camera"></i> Laporan Visual</h3>
-            <input type="text" id="nama" placeholder="Nama Pelapor">
-            <select id="kat">
-                <option>Pilih Kategori</option>
-                <option>Drainase Tersumbat</option>
-                <option>Sampah Liar</option>
-                <option>Kebakaran</option>
-                <option>Lainnya</option>
-            </select>
-            <textarea id="ket" rows="3" placeholder="Deskripsi kejadian..."></textarea>
-            
-            <div id="gps-status" style="padding:10px; background:#e8f5e9; border-radius:8px; font-size:12px; margin-bottom:10px; color:var(--primary-dark);">
-                <i class="fas fa-location-crosshairs"></i> Lokasi belum dikunci
-            </div>
-            <button class="btn-main" style="background:var(--info); margin-bottom:10px;" onclick="getGPS()"><i class="fas fa-crosshairs"></i> Kunci Koordinat GPS</button>
-            
-            <input type="file" id="foto" accept="image/*" capture="camera">
-            <button class="btn-main" style="margin-top:15px;" onclick="kirimLaporan()"><i class="fas fa-paper-plane"></i> KIRIM LAPORAN KE DASHBOARD</button>
+            <h4><i class="fas fa-location-crosshairs"></i> Pelacakan Lokasi</h4>
+            <div id="gps-txt" class="gps-box">Lokasi belum dilacak...</div>
+            <button class="btn-main" onclick="trackLokasi()"><i class="fas fa-bullseye"></i> TRACK LOKASI SAYA</button>
         </div>
-
-        <div class="card" style="border: 2px solid var(--accent);">
-            <h4 style="color:var(--accent); margin:0 0 10px 0;"><i class="fas fa-phone-flip"></i> PANGGILAN DARURAT (HOTLINE)</h4>
+        <div class="card">
+            <h4><i class="fas fa-phone-flip"></i> Kontak Darurat</h4>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <a href="tel:110" class="btn-emergency" style="background:#1a237e;"><i class="fas fa-police-box"></i> POLISI</a>
+                <a href="tel:110" class="btn-emergency" style="background:#0d47a1;"><i class="fas fa-police-box"></i> POLISI</a>
                 <a href="tel:076538208" class="btn-emergency"><i class="fas fa-fire"></i> DAMKAR</a>
+                <a href="tel:076538208" class="btn-emergency" style="background:#e65100;"><i class="fas fa-burst"></i> BPBD</a>
+                <a href="https://wa.me/6285172206884" class="btn-emergency" style="background:#2e7d32;"><i class="fab fa-whatsapp"></i> WA CAMAT</a>
             </div>
         </div>
     </div>
-    <script>
-        let lat="", lng="";
-        function getGPS(){
-            navigator.geolocation.getCurrentPosition(p => {
-                lat = p.coords.latitude; lng = p.coords.longitude;
-                document.getElementById('gps-status').innerText = `Lokasi Terkunci: ${lat}, ${lng}`;
-            }, () => alert("Mohon aktifkan GPS!"));
-        }
-        function kirimLaporan(){ alert("Laporan Sedang Diproses..."); }
-    </script>
+    <script src="aksi.js"></script>
 </body>
 </html>

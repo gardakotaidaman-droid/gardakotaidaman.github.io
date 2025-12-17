@@ -1,0 +1,2 @@
+.gps-box { padding: 15px; background: #e3f2fd; border-radius: 12px; border: 1px dashed #2196f3; margin-bottom: 15px; font-size: 12px; }
+.btn-emergency { display: flex; align-items: center; justify-content: center; gap: 8px; background: #c62828; color: white; padding: 12px; border-radius: 10px; text-decoration: none; margin-bottom: 10px; font-weight: bold; font-size: 13px; }
