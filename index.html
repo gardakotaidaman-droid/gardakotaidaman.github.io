@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garda Dumai Kota</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="app-bar">🛡️ GARDA DUMAI KOTA</div>
+    <div class="container">
+        <div class="card" style="background: linear-gradient(135deg, #1e3c72, #2a5298); color:white;">
+            <small>Kondisi Cuaca Dumai</small>
+            <h3 id="txt-cuaca">29°C - Cerah Berawan</h3>
+        </div>
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <div class="card" style="flex:1; text-align:center; margin-bottom:0;"><h2 style="color:#f39c12; margin:0">12</h2><small>PROSES</small></div>
+            <div class="card" style="flex:1; text-align:center; margin-bottom:0;"><h2 style="color:#2ecc71; margin:0">142</h2><small>SELESAI</small></div>
+        </div>
+        <a href="modul/aksi/index.html" class="btn">📝 BUAT LAPORAN BARU</a>
+    </div>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">🏠<br>Home</a>
+        <a href="modul/peta/index.html" class="nav-item">📍<br>Peta</a>
+        <a href="modul/aksi/index.html" class="nav-item">⚡<br>Aksi</a>
+        <a href="modul/admin/login.html" class="nav-item">👤<br>Admin</a>
+    </nav>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
+</body>
+</html>
