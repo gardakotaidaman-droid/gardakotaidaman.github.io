@@ -1,16 +1,36 @@
 <!DOCTYPE html>
-<html lang="id"><head><meta charset="UTF-8"><link rel="stylesheet" href="../../css/style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head><body>
-    <div class="app-header"><div>OPERATOR LAPOR</div><i class="fas fa-sign-out-alt" onclick="location.href='../admin/login.html'"></i></div>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-header">
+        <div style="font-weight:bold;">OPERATOR LAPOR</div>
+        <i class="fas fa-sign-out-alt" onclick="localStorage.clear(); location.href='../admin/login.html'"></i>
+    </div>
     <div class="container">
-        <div class="card"><b>Petugas:</b> <span id="op-name"></span></div>
+        <div class="card" style="background:#e8f5e9;"><b>Petugas:</b> <span id="op-name"></span></div>
         <div class="card">
-            <button class="btn-main" onclick="track()">KUNCI GPS</button><p id="gps-msg" style="text-align:center; font-size:11px;">Belum dikunci</p>
+            <button class="btn-main" onclick="track()"><i class="fas fa-crosshairs"></i> KUNCI LOKASI GPS</button>
+            <p id="gps-msg" style="text-align:center; font-size:11px; margin:5px 0;">GPS belum dikunci</p>
+            <div id="map-preview"></div>
+            <hr>
             <select id="kat">
-                <option>🌊 Banjir Rob</option><option>🗑️ Sampah</option><option>👮 Kamtibmas</option><option>🔥 Kebakaran</option>
-                <option>💡 Lampu Jalan</option><option>🛣️ Jalan Rusak</option><option>🌳 Pohon Tumbang</option>
+                <option>🌊 Banjir Rob / Pasang Keling</option>
+                <option>🗑️ Penumpukan Sampah</option>
+                <option>👮 Kamtibmas / Tawuran</option>
+                <option>🔥 Kebakaran Lahan / Rumah</option>
+                <option>🛣️ Jalan Rusak / Berlubang</option>
             </select>
-            <textarea id="ket" placeholder="Keterangan..."></textarea>
+            <textarea id="ket" placeholder="Keterangan singkat kejadian..."></textarea>
             <input type="file" id="foto" capture="camera">
-            <button class="btn-main" id="btnL" onclick="lapor()">KIRIM LAPORAN</button>
+            <button class="btn-main" id="btnKirim" onclick="lapor()">🚀 KIRIM LAPORAN SEKARANG</button>
         </div>
-    </div><script src="operator.js"></script></body></html>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="operator.js"></script>
+</body>
+</html>

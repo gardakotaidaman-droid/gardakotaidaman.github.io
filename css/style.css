@@ -9,5 +9,4 @@ body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); pa
 .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
 .nav-item.active { color: var(--primary); font-weight: bold; }
 input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; box-sizing: border-box; }
-.badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; color: white; font-weight: bold; text-transform: uppercase; }
-.b-masuk { background: #9e9e9e; } .b-verifikasi { background: #0288d1; } .b-penanganan { background: #ff9800; } .b-selesai { background: #388e3c; }
+#map-preview { height: 180px; width: 100%; border-radius: 12px; margin-top: 10px; border: 2px solid var(--primary); display: none; }
