@@ -7,18 +7,18 @@
 </head>
 <body>
     <div class="app-header">
-        <div style="font-weight:bold;">OPERATOR PANEL</div>
-        <i class="fas fa-power-off" onclick="localStorage.clear(); location.href='../admin/login.html'"></i>
+        <div style="font-weight:bold;">OPERATOR LAPOR</div>
+        <i class="fas fa-sign-out-alt" onclick="localStorage.clear(); location.href='../admin/login.html'"></i>
     </div>
     <div class="container">
-        <div class="card" style="border-left:5px solid var(--primary);">
-            <small>Login Sebagai:</small><h3 id="op-name" style="margin:0;">-</h3>
+        <div class="card" style="background:#e8f5e9; border:1px solid #2e7d32;">
+            <small>Petugas:</small><h4 id="op-name" style="margin:0;">-</h4>
         </div>
         <div class="card">
-            <select id="kat"><option>Banjir Rob</option><option>Sampah</option></select>
-            <textarea id="ket" placeholder="Keterangan..."></textarea>
+            <select id="kat"><option>Banjir Rob</option><option>Drainase Tersumbat</option><option>Sampah</option></select>
+            <textarea id="ket" placeholder="Keterangan kejadian..."></textarea>
             <input type="file" id="foto" capture="camera">
-            <button class="btn-main" id="btnKirim" onclick="kirimLaporan()" style="margin-top:15px;">KIRIM LAPORAN</button>
+            <button class="btn-main" id="btnLapor" style="margin-top:15px;" onclick="lapor()">🚀 KIRIM LAPORAN</button>
         </div>
     </div>
     <script src="operator.js"></script>

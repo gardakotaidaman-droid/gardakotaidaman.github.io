@@ -9,22 +9,22 @@
 <body>
     <div class="app-header">
         <a href="../../index.html" style="color:white;"><i class="fas fa-chevron-left"></i></a>
-        <div style="font-weight:bold;">AKSI & DARURAT</div>
+        <div style="font-weight:900;">AKSI & DARURAT</div>
         <div style="width:20px;"></div>
     </div>
     <div class="container">
         <div class="card">
-            <h4><i class="fas fa-location-crosshairs"></i> Pelacakan Lokasi</h4>
-            <div id="gps-txt" class="gps-box">Lokasi belum dilacak...</div>
-            <button class="btn-main" onclick="trackLokasi()"><i class="fas fa-bullseye"></i> TRACK LOKASI SAYA</button>
+            <h4><i class="fas fa-map-location-dot"></i> Live Tracking Lokasi</h4>
+            <div id="gps-txt" class="track-box">Lokasi belum dilacak...</div>
+            <button class="btn-main" onclick="trackMe()"><i class="fas fa-crosshairs"></i> TRACK LOKASI SAYA</button>
         </div>
-        <div class="card">
-            <h4><i class="fas fa-phone-flip"></i> Kontak Darurat</h4>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <a href="tel:110" class="btn-emergency" style="background:#0d47a1;"><i class="fas fa-police-box"></i> POLISI</a>
-                <a href="tel:076538208" class="btn-emergency"><i class="fas fa-fire"></i> DAMKAR</a>
-                <a href="tel:076538208" class="btn-emergency" style="background:#e65100;"><i class="fas fa-burst"></i> BPBD</a>
-                <a href="https://wa.me/6285172206884" class="btn-emergency" style="background:#2e7d32;"><i class="fab fa-whatsapp"></i> WA CAMAT</a>
+        <div class="card" style="background:#fff5f5;">
+            <h4 style="color:#b71c1c;"><i class="fas fa-phone-volume"></i> Panggilan Darurat</h4>
+            <div class="emergency-grid">
+                <a href="tel:110" class="btn-red" style="background:#0d47a1;"><i class="fas fa-shield"></i> POLISI</a>
+                <a href="tel:076538208" class="btn-red"><i class="fas fa-fire"></i> DAMKAR</a>
+                <a href="tel:076538208" class="btn-red" style="background:#e65100;"><i class="fas fa-person-falling-burst"></i> BPBD</a>
+                <a href="https://wa.me/6285172206884" class="btn-red" style="background:#2e7d32;"><i class="fab fa-whatsapp"></i> WA CAMAT</a>
             </div>
         </div>
     </div>

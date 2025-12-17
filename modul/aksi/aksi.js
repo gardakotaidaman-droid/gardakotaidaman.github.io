@@ -1,9 +1,7 @@
-function trackLokasi() {
-    const box = document.getElementById('gps-txt');
-    box.innerText = "⌛ Melacak Lokasi...";
+function trackMe() {
+    const status = document.getElementById('gps-txt');
+    status.innerText = "⌛ Melacak Koordinat...";
     navigator.geolocation.getCurrentPosition(p => {
-        box.innerHTML = "✅ LOKASI TERKUNCI<br>Lat: " + p.coords.latitude + "<br>Long: " + p.coords.longitude;
-        localStorage.setItem("current_lat", p.coords.latitude);
-        localStorage.setItem("current_lng", p.coords.longitude);
-    }, () => alert("Aktifkan GPS!"));
+        status.innerHTML = `✅ <b>LOKASI TERKUNCI</b><br>Lat: ${p.coords.latitude}<br>Lng: ${p.coords.longitude}`;
+    }, () => alert("GPS Tidak Aktif!"));
 }

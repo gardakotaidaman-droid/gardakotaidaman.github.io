@@ -1,0 +1,41 @@
+const SAKTI = "https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec";
+if(localStorage.getItem("role") !== "admin") window.location.href="login.html";
+
+async function loadAdmin() {
+    const r = await fetch(SAKTI);
+    const d = await r.json();
+    
+    // Render Logs
+    let logH = "";
+    d.logs.reverse().slice(0,15).forEach(l => {
+        logH += `<div>[${new Date(l[0]).toLocaleTimeString()}] ${l[1]} Login</div>`;
+    });
+    document.getElementById('log-list').innerHTML = logH;
+
+    // Render Workflow
+    let html = "";
+    d.laporan.reverse().forEach((i, idx) => {
+        if(idx === d.laporan.length - 1) return;
+        html += `<div class="card" style="border-left:5px solid var(--primary);">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <small><b>${i[1]}</b> | ${new Date(i[0]).toLocaleDateString()}</small>
+                <span class="badge b-${i[6].toLowerCase()}">${i[6]}</span>
+            </div>
+            <p style="font-size:13px; margin:10px 0;">${i[3]}</p>
+            <div style="display:flex; gap:5px;">
+                <button class="btn-sm" style="background:#0288d1" onclick="updStatus('${i[0]}','Verifikasi')">VERIF</button>
+                <button class="btn-sm" style="background:#ff9800" onclick="updStatus('${i[0]}','Penanganan')">TANGANI</button>
+                <button class="btn-sm" style="background:#388e3c" onclick="updStatus('${i[0]}','Selesai')">DONE</button>
+                <a href="${i[5]}" target="_blank" class="btn-sm" style="background:#333; text-decoration:none;"><i class="fas fa-image"></i></a>
+            </div>
+        </div>`;
+    });
+    document.getElementById('wf-list').innerHTML = html;
+}
+
+async function updStatus(id, st) {
+    if(!confirm("Ubah status ke " + st + "?")) return;
+    await fetch(SAKTI, { method:'POST', mode:'no-cors', body: JSON.stringify({ action:'updateStatus', id:id, status:st }) });
+    alert("Status Diperbarui!"); window.location.reload();
+}
+loadAdmin();
