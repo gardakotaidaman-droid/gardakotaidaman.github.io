@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css"><title>Login Admin</title>
+</head>
+<body style="background:var(--primary); display:flex; align-items:center; height:100vh;">
+    <div class="container">
+        <div class="card" style="text-align:center;">
+            <h3>🔑 LOGIN ADMIN</h3>
+            <input type="text" id="user" placeholder="Username">
+            <input type="password" id="pass" placeholder="Password">
+            <button onclick="login()" class="btn">MASUK</button>
+        </div>
+    </div>
+    <script>
+        function login() {
+            if(document.getElementById('user').value === "camat_dumkot" && document.getElementById('pass').value === "dumaiidaman2025") {
+                localStorage.setItem("admin", "true"); window.location.href="index.html";
+            } else alert("Salah!");
+        }
+    </script>
+</body>
+</html>

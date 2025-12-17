@@ -5,11 +5,5 @@
   "display": "standalone",
   "background_color": "#2e7d32",
   "theme_color": "#2e7d32",
-  "icons": [
-    {
-      "src": "assets/img/garda-dumaikota.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "icons": [{ "src": "assets/img/garda-dumaikota.png", "sizes": "512x512", "type": "image/png" }]
 }

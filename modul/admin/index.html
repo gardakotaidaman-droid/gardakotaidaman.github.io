@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css"><title>Admin Panel</title>
+</head>
+<body>
+    <div class="app-bar">📊 DASHBOARD ADMIN</div>
+    <div class="container">
+        <button onclick="window.print()" class="btn" style="background:#455a64; margin-bottom:15px;">🖨️ CETAK LAPORAN MINGGUAN</button>
+        <div class="card" style="overflow-x:auto;">
+            <table style="width:100%; font-size:12px; border-collapse:collapse;">
+                <thead><tr style="background:#eee;"><th>Tgl</th><th>Masalah</th><th>Status</th></tr></thead>
+                <tbody id="data-table"><tr><td colspan="3" align="center">Memuat data...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        if(localStorage.getItem("admin") !== "true") window.location.href="login.html";
+        // Fungsi fetch data dari Google Sheets ditaruh di sini
+    </script>
+</body>
+</html>

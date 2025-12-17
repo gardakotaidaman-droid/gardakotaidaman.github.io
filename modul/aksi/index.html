@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css"><title>Aksi - Garda Kota</title>
+</head>
+<body>
+    <div class="app-bar">⚡ AKSI CEPAT</div>
+    <div class="container">
+        <div class="card">
+            <h3>📝 Form Lapor</h3>
+            <input type="text" id="nama" placeholder="Nama Pelapor">
+            <select id="kat"><option>Jalan Rusak</option><option>Sampah</option><option>Banjir</option></select>
+            <textarea id="ket" placeholder="Keterangan kejadian"></textarea>
+            <button onclick="ambilGPS()" class="btn" style="background:#007bff; margin-bottom:10px;">📍 Ambil GPS</button>
+            <div id="gps-info" style="font-size:11px; margin-bottom:10px;">Lokasi belum diambil</div>
+            <input type="file" id="foto" accept="image/*">
+            <button id="btnKirim" class="btn" style="margin-top:15px;" onclick="kirimLaporan()">🚀 KIRIM LAPORAN</button>
+        </div>
+        <div class="card" style="background:#ffebee">
+            <h3>🚨 Hubungi Petugas</h3>
+            <a href="tel:110" class="btn" style="background:#b71c1c; margin-bottom:10px;">🚓 POLISI (110)</a>
+            <a href="tel:076538208" class="btn" style="background:#e65100;">🚒 DAMKAR</a>
+        </div>
+    </div>
+    <script>
+        let lat="", lng="";
+        function ambilGPS() {
+            navigator.geolocation.getCurrentPosition(p => {
+                lat=p.coords.latitude; lng=p.coords.longitude;
+                document.getElementById('gps-info').innerText = "✅ Lokasi Terkunci: " + lat + "," + lng;
+            });
+        }
+        async function kirimLaporan() {
+            const nama = document.getElementById('nama').value;
+            const file = document.getElementById('foto').files[0];
+            if(!nama || !file || !lat) return alert("Lengkapi data!");
+            
+            document.getElementById('btnKirim').innerText = "⌛ Mengirim...";
+            // Logika upload ImgBB & WA Admin ditaruh di sini
+            alert("Laporan berhasil (Dummy)! Hubungkan SCRIPT_URL Google Sheets Bapak.");
+        }
+    </script>
+</body>
+</html>

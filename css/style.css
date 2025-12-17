@@ -1,14 +1,10 @@
-:root {
-    --primary: #2e7d32; /* Hijau Logo */
-    --accent: #d32f2f;  /* Merah Logo */
-    --light: #f4f7f6;
-    --white: #ffffff;
-}
-body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background: var(--light); padding-bottom: 70px; }
+:root { --primary: #2e7d32; --accent: #d32f2f; --bg: #f4f7f6; --white: #ffffff; }
+body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); padding-bottom: 70px; }
 .app-bar { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: bold; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 .container { padding: 15px; max-width: 500px; margin: auto; }
-.card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-.btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 30px; width: 100%; font-weight: bold; cursor: pointer; display: block; text-align: center; text-decoration: none; box-sizing: border-box; }
+.card { background: var(--white); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+.btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 30px; width: 100%; font-weight: bold; cursor: pointer; display: block; text-align: center; text-decoration: none; }
 .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; padding: 10px 0; z-index: 1000; }
 .nav-item { flex: 1; text-align: center; font-size: 11px; color: #888; text-decoration: none; }
 .nav-item.active { color: var(--primary); font-weight: bold; }
