@@ -2,22 +2,26 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/style.css"><title>Login Admin</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Login Admin</title>
 </head>
-<body style="background:var(--primary); display:flex; align-items:center; height:100vh;">
-    <div class="container">
-        <div class="card" style="text-align:center; padding:30px;">
-            <img src="../../assets/img/garda-dumaikota.png" style="width:100px; margin-bottom:15px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/608/608153.png'">
-            <h3>LOGIN ADMIN</h3>
-            <input type="password" id="p" placeholder="Password Idaman">
-            <button class="btn" onclick="l()">MASUK</button>
+<body style="background:linear-gradient(135deg, var(--primary), var(--primary-dark)); height:100vh; display:flex; align-items:center;">
+    <div class="container" style="text-align:center;">
+        <div class="card">
+            <img src="../../assets/img/garda-dumaikota.png" style="width:80px; margin-bottom:15px;">
+            <h3 style="margin:0;">ADMIN ACCESS</h3>
+            <p style="font-size:12px; color:#777;">Sistem Monitoring Garda Dumai Kota</p>
+            <input type="password" id="p" placeholder="Password Admin">
+            <button class="btn-main" onclick="l()">LOG IN <i class="fas fa-sign-in-alt"></i></button>
+            <a href="../../index.html" style="display:block; margin-top:20px; font-size:12px; color:#888;">Kembali ke Beranda</a>
         </div>
     </div>
     <script>
         function l(){
             if(document.getElementById('p').value === "dumaiidaman2025"){
-                localStorage.setItem("garda_admin", "true"); window.location.href="index.html";
-            } else alert("Password Salah!");
+                localStorage.setItem("adm_garda", "true"); window.location.href="index.html";
+            } else alert("Akses Ditolak!");
         }
     </script>
 </body>

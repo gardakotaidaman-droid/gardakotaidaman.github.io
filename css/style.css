@@ -1,15 +1,32 @@
-:root { --primary: #2e7d32; --accent: #d32f2f; --bg: #f4f7f6; --white: #ffffff; }
-body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); padding-bottom: 75px; }
-.app-bar { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: bold; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-.container { padding: 15px; max-width: 500px; margin: auto; }
-.card { background: var(--white); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-.btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 30px; width: 100%; font-weight: bold; cursor: pointer; display: block; text-align: center; text-decoration: none; font-size: 16px; }
-.btn-blue { background: #1565c0; }
-.btn-red { background: var(--accent); }
-.bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; padding: 10px 0; z-index: 1000; }
-.nav-item { flex: 1; text-align: center; font-size: 11px; color: #888; text-decoration: none; }
+:root { 
+    --primary: #2e7d32; --primary-dark: #1b5e20;
+    --accent: #d32f2f; --warning: #ff9800; --info: #0288d1;
+    --bg: #f8f9fa; --white: #ffffff; --shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background: var(--bg); color: #333; line-height: 1.5; padding-bottom: 80px; }
+
+/* Header & Nav */
+.app-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px 15px; border-radius: 0 0 20px 20px; display: flex; align-items: center; justify-content: space-between; sticky: top; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+.app-header img { width: 45px; height: 45px; object-fit: contain; }
+.back-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 10px; cursor: pointer; }
+
+.bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 10px 0; border-top: 1px solid #eee; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+.nav-item { flex: 1; text-align: center; font-size: 11px; color: #999; text-decoration: none; }
+.nav-item i { font-size: 20px; display: block; margin-bottom: 3px; }
 .nav-item.active { color: var(--primary); font-weight: bold; }
-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; font-size: 12px; }
-th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
-th { background: #f8f9fa; }
+
+/* Grid & Cards */
+.container { padding: 15px; max-width: 500px; margin: auto; }
+.card { background: var(--white); border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.03); }
+.alert-box { background: #fff3e0; border-left: 5px solid var(--warning); padding: 12px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; }
+
+/* Form & Buttons */
+input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; outline: none; font-size: 14px; }
+.btn-main { background: linear-gradient(to right, var(--primary), var(--primary-dark)); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(46,125,50,0.2); }
+.btn-emergency { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; text-decoration: none; display: block; text-align: center; margin-bottom: 10px; }
+
+/* News Ticker */
+.ticker { background: #333; color: #ffeb3b; padding: 5px; font-size: 11px; white-space: nowrap; overflow: hidden; position: relative; }
+.ticker p { display: inline-block; padding-left: 100%; animation: scroll 20s linear infinite; margin: 0; }
+@keyframes scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
