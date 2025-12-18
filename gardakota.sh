@@ -4,7 +4,7 @@
 URL_SAKTI="https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec"
 IMGBB_KEY="2e07237050e6690770451ded20f761b5"
 
-echo "🔧 Mengaktifkan Geofencing Lokal Kelurahan Dumai Kota..."
+echo "🔧 Memperbaiki Parsing JSON Nominatim untuk Kelurahan Dumai..."
 
 cat << EOF > modul/operator/operator.js
 const SAKTI = "$URL_SAKTI";
@@ -15,53 +15,43 @@ if(!label) window.location.href="../admin/login.html";
 document.getElementById('op-name').innerText = label;
 
 let lat = "", lng = "";
-let wilayahInfo = "Kec. Dumai Kota";
-
-// DATABASE TITIK TENGAH KELURAHAN (DUMAI KOTA)
-const TITIK_KELURAHAN = [
-    { nama: "Kel. Laksamana", lat: 1.6811, lng: 101.4455 },
-    { nama: "Kel. Bintan", lat: 1.6755, lng: 101.4468 },
-    { nama: "Kel. Dumai Kota", lat: 1.6778, lng: 101.4528 },
-    { nama: "Kel. Rimba Sekampung", lat: 1.6698, lng: 101.4425 },
-    { nama: "Kel. Sukajadi", lat: 1.6712, lng: 101.4495 }
-];
-
-// Fungsi Hitung Jarak Terdekat (Haversine)
-function hitungKelurahan(userLat, userLng) {
-    let terdekat = "";
-    let jarakMin = Infinity;
-
-    TITIK_KELURAHAN.forEach(kel => {
-        const d = Math.sqrt(Math.pow(userLat - kel.lat, 2) + Math.pow(userLng - kel.lng, 2));
-        if (d < jarakMin) {
-            jarakMin = d;
-            terdekat = kel.nama;
-        }
-    });
-    return terdekat;
-}
+let wilayahInfo = "Dumai Kota";
 
 async function ambilLokasi() {
     const box = document.getElementById('gps-box');
-    box.innerHTML = "⌛ Menghitung Posisi Kelurahan...";
+    box.innerHTML = "⌛ Mendeteksi Kelurahan Dumai...";
     box.style.background = "#fff3e0";
 
     navigator.geolocation.getCurrentPosition(async (p) => {
         lat = p.coords.latitude; 
         lng = p.coords.longitude;
         
-        // Deteksi Kelurahan Berdasarkan Koordinat Terdekat
-        const namaKel = hitungKelurahan(lat, lng);
-        wilayahInfo = \`\${namaKel}, Dumai Kota\`;
-        
-        box.innerHTML = \`✅ TERKUNCI<br><span style="color:#2e7d32; font-size:16px; font-weight:900;">\${wilayahInfo}</span><br><small style="color:#666;">\${lat}, \${lng}</small>\`;
-        box.style.background = "#e8f5e9";
-        box.style.color = "#2e7d32";
-        box.style.borderColor = "#2e7d32";
-        
+        try {
+            // Pemanggilan dengan Zoom 17 & accept-language sesuai link referensi Bapak
+            const response = await fetch(\`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=\${lat}&lon=\${lng}&zoom=17&addressdetails=1&accept-language=id\`);
+            const data = await response.json();
+            
+            const addr = data.address;
+            
+            // SESUAI DATA NOMINATIM DUMAI:
+            // suburb = Kelurahan (Contoh: Rimba Sekampung)
+            // city_district = Kecamatan (Contoh: Dumai Kota)
+            const kel = addr.suburb || addr.village || addr.neighbourhood || "Kelurahan tdk terdeteksi";
+            const kec = addr.city_district || addr.district || "Kecamatan tdk terdeteksi";
+            
+            wilayahInfo = \`Kel. \${kel}, \${kec}\`;
+            
+            box.innerHTML = \`✅ TERKUNCI<br><span style="color:#2e7d32; font-size:16px; font-weight:800;">\${wilayahInfo}</span><br><small style="color:#666;">\${lat}, \${lng}</small>\`;
+            box.style.background = "#e8f5e9";
+            box.style.color = "#2e7d32";
+            box.style.border = "2px solid #2e7d32";
+            
+        } catch (err) {
+            box.innerHTML = "✅ TERKUNCI<br><small>Gagal memuat nama wilayah (Timeout/Sinyal)</small>";
+        }
     }, (err) => {
-        alert("GPS ERROR: Aktifkan Lokasi!");
-        box.innerText = "❌ GPS Gagal";
+        alert("Gagal melacak GPS!");
+        box.innerText = "❌ GPS Error";
     }, { enableHighAccuracy: true });
 }
 
@@ -71,18 +61,14 @@ async function kirimLaporan() {
     const ket = document.getElementById('ket').value;
     const btn = document.getElementById('btnLapor');
 
-    if(!lat || !lng) return alert("Kunci GPS dulu!");
-    if(!file) return alert("Foto wajib ada!");
-
+    if(!lat || !file) return alert("Wajib Kunci GPS & Ambil Foto!");
     btn.innerText = "⏳ MENGIRIM...";
     btn.disabled = true;
 
     try {
-        let fd = new FormData(); 
-        fd.append("image", file);
+        let fd = new FormData(); fd.append("image", file);
         let resImg = await fetch("https://api.imgbb.com/1/upload?key=" + IMGBB, {method:"POST", body:fd});
         let dataImg = await resImg.json();
-        
         const mapsUrl = "https://www.google.com/maps?q=" + lat + "," + lng;
 
         await fetch(SAKTI, {
@@ -97,14 +83,14 @@ async function kirimLaporan() {
             })
         });
 
-        alert("Laporan Terkirim!");
+        alert("Berhasil!");
         window.location.reload();
     } catch(e) {
-        alert("Gagal Kirim!");
-        btn.innerText = "🚀 KIRIM KE DASHBOARD";
+        alert("Gagal!");
+        btn.innerText = "KIRIM KE DASHBOARD";
         btn.disabled = false;
     }
 }
 EOF
 
-echo "✅ Geofencing Kelurahan Aktif. Pasti muncul namanya sekarang."
+echo "✅ Berhasil Diperbaiki. Kelurahan sekarang ditarik dari data 'suburb' Nominatim."
