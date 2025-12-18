@@ -1,12 +1,44 @@
-:root { --primary: #0d47a1; --primary-dark: #002171; --accent: #d32f2f; --bg: #f4f7f6; }
-body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); padding-bottom: 90px; color: #1a237e; }
-.app-header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 25px 15px; border-radius: 0 0 25px 25px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 1000; }
-.container { padding: 15px; max-width: 500px; margin: auto; }
-.card { background: white; border-radius: 18px; padding: 18px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid rgba(13,71,161,0.1); }
-.btn-main { background: linear-gradient(to right, var(--primary), var(--primary-dark)); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; text-align: center; display: block; text-decoration: none; box-sizing: border-box; font-size: 16px; margin-top: 10px; }
-.bottom-nav { position: fixed; bottom: 15px; left: 15px; right: 15px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; padding: 12px 0; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid rgba(255,255,255,0.3); }
-.nav-item { flex: 1; text-align: center; font-size: 10px; color: #999; text-decoration: none; }
-.nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
-.nav-item.active { color: var(--primary); font-weight: bold; }
-input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; box-sizing: border-box; }
-#map-preview { height: 180px; width: 100%; border-radius: 12px; margin-top: 10px; border: 2px solid var(--primary); display: none; }
+:root { 
+    --primary: #0d47a1; 
+    --primary-dark: #002171; 
+    --accent: #d32f2f; 
+    --bg: #f0f2f5; 
+    --glass: rgba(255, 255, 255, 0.9);
+}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: #1c1e21; }
+
+/* Poles Header: Lebih Kokoh */
+.app-header { 
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    padding: 20px 15px;
+    border-bottom: 3px solid #ffeb3b; /* Garis Kuning Khas Melayu/Pemerintah */
+}
+
+/* Poles Card: Efek Melayang & Kaca */
+.card { 
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(13, 71, 161, 0.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease;
+}
+.card:active { transform: scale(0.98); }
+
+/* Poles Tombol: Efek Tekan Premium */
+.btn-main { 
+    border-radius: 15px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 14px;
+    box-shadow: 0 4px 15px rgba(13, 71, 161, 0.3);
+}
+
+/* Poles Bottom Nav: Lebih Futuristik */
+.bottom-nav { 
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 10px 0 25px 0; /* Padding bawah lebih besar untuk iPhone/Android baru */
+}
