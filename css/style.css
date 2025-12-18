@@ -1,80 +1,12 @@
-:root { 
-    --primary: #0066FF; /* Biru Teknologi Cerah */
-    --danger: #FF3366; /* Merah Modern */
-    --success: #00C853; /* Hijau Modern */
-    --dark: #2D3436; /* Hitam Lembut */
-    --grey: #636E72;
-    --bg: #F8F9FA; /* Abu sangat muda */
-    --surface: #FFFFFF; /* Putih Bersih */
-    --h: 60px; --nav: 65px;
-}
+:root { --primary: #0066FF; --dark: #001a4d; --bg: #f8f9fa; --h: 60px; --nav: 70px; }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: 0; background: var(--bg); color: var(--dark);
-    padding-top: calc(var(--h) + 15px); padding-bottom: calc(var(--nav) + 20px);
-    line-height: 1.5;
-}
-
-/* HEADER MODERN MINIMALIS (Putih Bersih) */
-.app-header { 
-    height: var(--h); background: var(--surface);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 20px; position: fixed; top: 0; width: 100%; z-index: 2000;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.05); /* Garis tipis halus */
-}
-.app-header h1 { 
-    font-size: 16px; font-weight: 800; color: var(--primary); margin: 0; letter-spacing: -0.5px;
-}
-.header-icon { color: var(--dark); font-size: 20px; text-decoration: none; }
-
-/* CONTAINER & CARD MODERN (Soft Shadow) */
-.container { padding: 0 16px; max-width: 500px; margin: auto; }
-.card { 
-    background: var(--surface); border-radius: 16px; padding: 20px; margin-bottom: 16px;
-    border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Bayangan halus modern */
-}
-
-/* WIDGET DASHBOARD MODERN */
-.modern-widget {
-    display: flex; align-items: center; gap: 15px;
-}
-.widget-icon {
-    width: 50px; height: 50px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
-}
-.bg-blue-light { background: #E3F2FD; color: var(--primary); }
-.bg-orange-light { background: #FFF3E0; color: #FF9800; }
-.widget-data h3 { margin: 0; font-size: 22px; font-weight: 800; }
-.widget-data small { color: var(--grey); font-size: 12px; font-weight: 600; text-transform: uppercase; }
-
-/* TOMBOL MODERN */
-.btn-main { 
-    height: 50px; display: flex; align-items: center; justify-content: center;
-    background: var(--primary); color: white; border: none; border-radius: 14px;
-    width: 100%; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none;
-    box-shadow: 0 4px 10px rgba(0, 102, 255, 0.2); transition: 0.2s;
-}
-.btn-main:active { transform: scale(0.98); }
-.btn-danger { background: var(--danger); box-shadow: 0 4px 10px rgba(255, 51, 102, 0.3); }
-
-/* BOTTOM NAV MODERN (Ikon Besar Tanpa Teks) */
-.bottom-nav { 
-    height: var(--nav); position: fixed; bottom: 0; width: 100%; 
-    background: var(--surface); display: flex; 
-    box-shadow: 0 -1px 0 rgba(0,0,0,0.05); z-index: 2000;
-    padding: 0 10px 5px 10px;
-    border-top-left-radius: 20px; border-top-right-radius: 20px; /* Sudut membulat di bawah */
-}
-.nav-item { 
-    flex: 1; display: flex; flex-direction: column; align-items: center; 
-    justify-content: center; color: #B0B0B0; text-decoration: none; position: relative;
-}
-.nav-item i { font-size: 24px; /* Ikon lebih besar */ }
-.nav-item.active { color: var(--primary); }
-/* Indikator Titik untuk Aktif */
-.nav-item.active::after {
-    content: ''; position: absolute; bottom: 8px; width: 6px; height: 6px;
-    background: var(--primary); border-radius: 50%;
-}
+body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); padding-top: var(--h); padding-bottom: var(--nav); }
+.app-header { height: var(--h); background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; width: 100%; z-index: 2000; box-shadow: 0 1px 5px rgba(0,0,0,0.1); border-bottom: 2px solid var(--primary); }
+.app-header h1 { font-size: 14px; font-weight: 800; color: var(--dark); margin: 0; text-transform: uppercase; }
+.container { padding: 15px; max-width: 500px; margin: auto; }
+.card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.btn-main { height: 48px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: white; border: none; border-radius: 10px; width: 100%; font-weight: 700; text-decoration: none; cursor: pointer; }
+.bottom-nav { height: var(--nav); position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; z-index: 2000; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aaa; text-decoration: none; font-size: 10px; }
+.nav-item.active { color: var(--primary); font-weight: bold; }
+input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }

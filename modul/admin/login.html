@@ -2,45 +2,47 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Garda Kota</title>
     <link rel="stylesheet" href="../../css/style.css">
-    <style>
-        body { display: flex; align-items: center; justify-content: center; height: 100vh; padding: 20px; background: white; }
-        .login-box { width: 100%; max-width: 400px; text-align: center; }
-        input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 12px; background: #f9f9f9; }
-    </style>
+    <title>Login Petugas</title>
 </head>
-<body>
-    <div class="login-box">
-        <img src="https://raw.githubusercontent.com/gardakotaidaman-droid/gardakotaidaman.github.io/main/assets/img/garda-dumaikota.png" style="width:100px; margin-bottom:20px;">
-        <h2 style="margin-bottom:5px;">GARDA DUMAI KOTA</h2>
-        <p style="color:#666; font-size:12px; margin-bottom:30px;">Silakan login untuk akses sistem</p>
-
-        <input type="text" id="user" placeholder="Username (misal: lurah, admin)">
+<body style="display:flex; align-items:center; justify-content:center; height:100vh; background:#eef2f5;">
+    <div class="card" style="width:100%; max-width:340px; text-align:center;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png" width="60" style="margin-bottom:15px;">
+        <h3 style="margin:0; color:var(--dark);">GARDA DUMAI KOTA</h3>
+        <p style="font-size:11px; color:#666; margin-bottom:20px;">Sistem Komando Terpadu</p>
+        <input type="text" id="user" placeholder="Username / Jabatan">
         <input type="password" id="pass" placeholder="Password">
-        
-        <button class="btn-main" onclick="auth()">MASUK SISTEM</button>
-        <div id="msg" style="margin-top:15px; font-size:12px; color:red;"></div>
+        <button class="btn-main" onclick="auth()">MASUK</button>
+        <p id="err" style="color:red; font-size:11px; margin-top:10px; display:none;">Akses Ditolak: User/Pass Salah!</p>
     </div>
-
     <script>
         function auth() {
             const u = document.getElementById('user').value.toLowerCase();
             const p = document.getElementById('pass').value;
-            const msg = document.getElementById('msg');
-
-            // LOGIKA LOGIN SEDERHANA
-            if(u === 'admin' && p === 'admin123') {
-                localStorage.setItem("role", "admin");
-                localStorage.setItem("user_label", "Admin Command Center");
-                window.location.href = "index.html";
-            } else if (p === 'siap86') { // Password Petugas Lapangan
-                localStorage.setItem("role", "operator");
-                localStorage.setItem("user_label", u.toUpperCase()); // Nama Operator diambil dari username
-                window.location.href = "../operator/index.html";
+            
+            // DAFTAR SESUAI INSTRUKSI BAPAK
+            const admins = ["camat", "sekcam", "trantib", "kapolsek", "danramil", "binmas", "ramil01"];
+            const kels = ["rimbas", "sukajadi", "laksamana", "dumaikota", "bintan"];
+            const roles = ["lurah", "babinsa", "bhabin", "trantibkel", "pamong"];
+            
+            let role = "", label = "";
+            
+            if(admins.includes(u) && p === "dksiaga") { 
+                role="admin"; label=u.toUpperCase(); 
             } else {
-                msg.innerText = "Username atau Password Salah!";
+                kels.forEach(k => {
+                    roles.forEach(r => {
+                        if(u === `${r}-${k}` && p === "pantaudk") {
+                            role="operator"; label=u.toUpperCase().replace("-"," ");
+                        }
+                    });
+                });
             }
+
+            if(role) {
+                localStorage.setItem("role", role); localStorage.setItem("user_label", label);
+                window.location.href = role === "admin" ? "index.html" : "../operator/index.html";
+            } else { document.getElementById('err').style.display='block'; }
         }
     </script>
 </body>
