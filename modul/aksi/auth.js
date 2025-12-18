@@ -1,4 +1,4 @@
-// DATABASE USER & PASSWORD
+// DATABASE USER & PASSWORD (Kunci Mati)
 const admins = ["camat", "sekcam", "trantib", "kapolsek", "danramil"];
 const kels = ["rimbas", "sukajadi", "laksamana", "dumaikota", "bintan"];
 const roles = ["lurah", "babinsa", "bhabin", "pamong", "trantib"];
@@ -9,37 +9,48 @@ function authSistem() {
     let role = "";
     let label = "";
 
-    // Cek Grup Admin (Pass: dksiaga)
+    // 1. Validasi Admin (Pass: dksiaga)
     if(admins.includes(u) && p === "dksiaga") { 
-        role="admin"; 
-        label=u.toUpperCase(); 
+        role = "admin"; 
+        label = u.toUpperCase(); 
     }
-    // Cek Grup Operator (Pass: pantaudk)
+    // 2. Validasi Operator Kelurahan (Pass: pantaudk)
     else {
         kels.forEach(k => roles.forEach(r => {
             if(u === `${r}-${k}` && p === "pantaudk") { 
-                role="operator"; 
-                label=u.toUpperCase().replace("-"," "); 
+                role = "operator"; 
+                label = u.toUpperCase().replace("-"," "); 
             }
         }));
     }
 
+    // 3. Eksekusi Login
     if(role) {
         localStorage.setItem("role", role); 
         localStorage.setItem("user_label", label);
-        // Arahkan ke folder masing-masing
-        window.location.href = role === "admin" ? "index.html" : "../operator/index.html";
+        
+        // --- PERBAIKAN JALUR REDIRECT ---
+        // Kita gunakan path yang jelas agar tidak nyasar
+        if (role === "admin") {
+            // Jika admin, arahkan ke dashboard utama admin
+            window.location.href = "index.html"; 
+        } else {
+            // Jika operator, lempar keluar ke folder operator
+            window.location.href = "../operator/index.html";
+        }
     } else {
-        alert("Akses Ditolak!");
+        alert("⚠️ AKSES DITOLAK!\nUsername atau Password salah.");
     }
 }
 
 // FUNGSI SATPAM (Proteksi Halaman)
-// Panggil ini di setiap index.html agar orang tidak bisa tembus lewat URL
 function proteksiHalaman(tipe) {
     const r = localStorage.getItem("role");
     const l = localStorage.getItem("user_label");
+    
+    // Jika tidak ada data login, atau operator coba-coba masuk folder admin
     if(!l || (tipe === 'admin' && r !== 'admin')) {
+        // Tendang balik ke halaman login
         window.location.href = "../admin/login.html";
     }
 }
