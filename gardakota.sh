@@ -4,7 +4,7 @@
 URL_SAKTI="https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec"
 IMGBB_KEY="2e07237050e6690770451ded20f761b5"
 
-echo "🔧 Memperbaiki Parsing JSON: Target Village & District..."
+echo "🔧 Memperbaiki Logika: Menangani Ketiadaan Data Kecamatan..."
 
 cat << EOF > modul/operator/operator.js
 const SAKTI = "$URL_SAKTI";
@@ -19,7 +19,7 @@ let wilayahInfo = "Menunggu GPS...";
 
 async function ambilLokasi() {
     const box = document.getElementById('gps-box');
-    box.innerHTML = "⌛ Mendeteksi Wilayah...";
+    box.innerHTML = "⌛ Analisis Data Wilayah...";
     box.style.background = "#fff3e0";
 
     navigator.geolocation.getCurrentPosition(async (p) => {
@@ -27,19 +27,32 @@ async function ambilLokasi() {
         lng = p.coords.longitude;
         
         try {
-            // URL PERSIS LINK BAPAK (JSONv2 + Zoom 18 + Bahasa ID)
+            // REQUEST KE OSM (Sesuai Parameter Bapak)
             const response = await fetch(\`https://nominatim.openstreetmap.org/reverse?lat=\${lat}&lon=\${lng}&zoom=18&accept-language=id-ID&format=jsonv2\`);
             const data = await response.json();
             const addr = data.address;
             
-            // --- LOGIKA SESUAI DATA "TELUK BINJAI" ---
-            // "village": "Teluk Binjai" -> Kita ambil addr.village
-            // "district": "Dumai Timur" -> Kita ambil addr.district
+            // --- LOGIKA ADAPTIF (SESUAI BUKTI JSON BAPAK) ---
             
-            const kel = addr.village || addr.suburb || "Kelurahan ?";
-            const kec = addr.district || addr.city_district || "Kecamatan ?";
+            // 1. Bagian DEPAN (Spesifik)
+            // Cek urutan: Village (Teluk Binjai) -> Suburb -> Road (Jln Pemda)
+            let bagianDepan = addr.village || addr.suburb || addr.neighbourhood || addr.road || "Lokasi";
             
-            wilayahInfo = \`Kel. \${kel}, Kec. \${kec}\`;
+            // 2. Bagian BELAKANG (Admin)
+            // Cek urutan: City_District (Dumai Timur) -> District -> City (Dumai)
+            // Di JSON Teluk Binjai, ini akan jatuh ke 'addr.city' karena 'city_district' null.
+            let bagianBelakang = addr.city_district || addr.district || addr.city || "Dumai";
+
+            // 3. PEMBERIAN LABEL (PREFIX)
+            let labelDepan = "";
+            if (addr.village || addr.suburb) {
+                labelDepan = "Kel. ";
+            } else if (addr.road) {
+                labelDepan = "Jln. ";
+            }
+
+            // GABUNGKAN
+            wilayahInfo = \`\${labelDepan}\${bagianDepan}, \${bagianBelakang}\`;
             
             box.innerHTML = \`✅ TERKUNCI<br><span style="color:#2e7d32; font-size:16px; font-weight:800;">\${wilayahInfo}</span><br><small style="color:#666;">\${lat}, \${lng}</small>\`;
             box.style.background = "#e8f5e9";
@@ -47,11 +60,11 @@ async function ambilLokasi() {
             box.style.borderColor = "#2e7d32";
             
         } catch (err) {
-            box.innerHTML = "✅ TERKUNCI<br><small>Gagal parsing (Cek Sinyal)</small>";
+            box.innerHTML = "✅ TERKUNCI<br><small>Koneksi lambat (Koordinat Aman)</small>";
         }
     }, (err) => {
-        alert("GPS ERROR: Aktifkan Lokasi!");
-        box.innerText = "❌ GPS Gagal";
+        alert("GPS ERROR: Wajib izinkan lokasi!");
+        box.innerText = "❌ GPS Mati";
     }, { enableHighAccuracy: true });
 }
 
@@ -61,7 +74,7 @@ async function kirimLaporan() {
     const ket = document.getElementById('ket').value;
     const btn = document.getElementById('btnLapor');
 
-    if(!lat || !file) return alert("Wajib Kunci GPS & Ambil Foto!");
+    if(!lat || !file) return alert("Foto & GPS Wajib!");
     btn.innerText = "⏳ MENGIRIM...";
     btn.disabled = true;
 
@@ -69,6 +82,8 @@ async function kirimLaporan() {
         let fd = new FormData(); fd.append("image", file);
         let resImg = await fetch("https://api.imgbb.com/1/upload?key=" + IMGBB, {method:"POST", body:fd});
         let dataImg = await resImg.json();
+        
+        // Google Maps Link Query (Lebih kompatibel di HP)
         const mapsUrl = "https://www.google.com/maps?q=" + lat + "," + lng;
 
         await fetch(SAKTI, {
@@ -83,14 +98,14 @@ async function kirimLaporan() {
             })
         });
 
-        alert("Laporan Terkirim!");
+        alert("Laporan Masuk!");
         window.location.reload();
     } catch(e) {
         alert("Gagal Kirim!");
-        btn.innerText = "🚀 KIRIM KE DASHBOARD";
+        btn.innerText = "KIRIM KE DASHBOARD";
         btn.disabled = false;
     }
 }
 EOF
 
-echo "✅ KOREKSI SELESAI. Prioritas: Village (Kelurahan) & District (Kecamatan)."
+echo "✅ Logika Diperbaiki: Menangani JSON yang tidak memiliki data Kecamatan."
