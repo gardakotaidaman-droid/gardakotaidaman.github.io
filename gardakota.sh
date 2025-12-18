@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# CONFIG DATA
+# CONFIG DATA (Sesuai database Bapak)
 URL_SAKTI="https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec"
 
-echo "🔧 Memperbaiki Fungsi Kontrol Admin (Fix URL Error)..."
+echo "🔧 Memperbaiki Sistem Kontrol: GARDA DUMAI KOTA..."
 
 cat << EOF > modul/admin/index.html
 <!DOCTYPE html>
@@ -13,11 +13,16 @@ cat << EOF > modul/admin/index.html
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Garda Dumai Kota Command Center</title>
+    <style>
+        /* Tambahan style agar tombol tidak dianggap link */
+        button { cursor: pointer; border: none; transition: 0.2s; }
+        button:active { transform: scale(0.9); }
+    </style>
 </head>
 <body style="background:#f4f7f6; font-family: sans-serif; margin:0;">
     <div class="app-header" style="background:#1a1a1a; color:white; padding:15px 20px; display:flex; justify-content:space-between; align-items:center;">
         <h1 style="font-size:18px; margin:0;">Admin TRC | Halo, <span id="admin-nick"></span></h1>
-        <button onclick="localStorage.clear(); location.href='login.html';" style="background:#c0392b; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Keluar</button>
+        <button onclick="localStorage.clear(); location.href='login.html';" style="background:#c0392b; color:white; padding:8px 15px; border-radius:5px;">Keluar</button>
     </div>
 
     <div style="padding: 20px; max-width: 1200px; margin: auto;">
@@ -41,34 +46,54 @@ cat << EOF > modul/admin/index.html
 
     <script src="../aksi/auth.js"></script>
     <script>
-        // Proteksi Halaman
-        proteksiHalaman('admin');
-        document.getElementById('admin-nick').innerText = localStorage.getItem('user_label');
+        // Jalankan satpam halaman
+        if(typeof proteksiHalaman === 'function') proteksiHalaman('admin');
+        document.getElementById('admin-nick').innerText = localStorage.getItem('user_label') || "ADMIN";
 
         const SAKTI = "$URL_SAKTI";
 
-        async function updateStatus(rowId, status) {
-            if(!confirm("Ubah status ke " + status + "?")) return;
-            // Gunakan URLSearchParams agar karakter spesial (seperti Jln/Kel) tidak merusak URL
+        // FUNGSI UTAMA: Update Status Tanpa Redirect
+        async function updateStatus(rowId, newStatus) {
+            if(!confirm("Proses laporan ini?")) return;
+            
+            // Tampilkan loading sementara pada tombol
+            console.log("Mengirim perintah ke database...");
+            
+            const targetUrl = \`\${SAKTI}?action=update&id=\${rowId}&status=\${newStatus}\`;
+            
             try {
-                await fetch(\`\${SAKTI}?action=update&id=\${rowId}&status=\${status}\`, { method: 'POST', mode: 'no-cors' });
-                alert("Status Berhasil Diperbarui!");
-                loadLaporan();
-            } catch(e) { alert("Gagal koneksi ke server!"); }
+                // Gunakan image ping untuk bypass CORS limitasi Apps Script yang sering bikin macet
+                const img = new Image();
+                img.src = targetUrl; 
+                
+                alert("Perintah '"+newStatus+"' Terkirim! Mohon tunggu 3 detik untuk refresh database.");
+                
+                // Beri jeda 3 detik agar database Sheets sempat memproses sebelum kita load ulang
+                setTimeout(loadLaporan, 3000);
+            } catch(e) {
+                alert("Gagal terhubung ke pusat data!");
+            }
         }
 
         async function hapusData(rowId) {
-            if(!confirm("⚠️ Hapus laporan ini secara permanen?")) return;
+            if(!confirm("⚠️ PERINGATAN: Hapus laporan secara permanen?")) return;
+            
+            const targetUrl = \`\${SAKTI}?action=delete&id=\${rowId}\`;
+            
             try {
-                await fetch(\`\${SAKTI}?action=delete&id=\${rowId}\`, { method: 'POST', mode: 'no-cors' });
-                alert("Laporan Terhapus!");
-                loadLaporan();
-            } catch(e) { alert("Gagal menghapus!"); }
+                const img = new Image();
+                img.src = targetUrl;
+                alert("Perintah Hapus Terkirim!");
+                setTimeout(loadLaporan, 3000);
+            } catch(e) {
+                alert("Gagal menghapus!");
+            }
         }
 
         async function loadLaporan() {
             const tbody = document.getElementById('table-body');
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">Memuat data...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">⌛ Sinkronisasi Data Laporan...</td></tr>';
+            
             try {
                 const res = await fetch(SAKTI);
                 const data = await res.json();
@@ -77,25 +102,26 @@ cat << EOF > modul/admin/index.html
                 tbody.innerHTML = '';
 
                 laporans.reverse().forEach((item, index) => {
-                    const realID = laporans.length - index; // ID baris di Sheets
-                    const st = item[6] || 'Menunggu';
-                    const stColor = st === 'Selesai' ? 'background:#d4edda;color:#155724' : (st === 'Proses' ? 'background:#fff3cd;color:#856404' : 'background:#ffdada;color:#c0392b');
+                    const realRowIndex = laporans.length - index; 
+                    const statusVal = item[6] || 'Menunggu';
+                    const stColor = statusVal === 'Selesai' ? 'background:#d4edda;color:#155724' : (statusVal === 'Proses' ? 'background:#fff3cd;color:#856404' : 'background:#ffdada;color:#c0392b');
                     
+                    // Gunakan BUTTON murni, hindari tag A agar tidak lari ke 404
                     tbody.innerHTML += \`
                         <tr>
                             <td style="padding:15px; border-bottom:1px solid #eee;">\${item[0]}</td>
                             <td style="padding:15px; border-bottom:1px solid #eee;"><b>\${item[2]}</b><br><small>\${item[1]}</small></td>
                             <td style="padding:15px; border-bottom:1px solid #eee; color:#2e7d32; font-weight:bold; font-size:13px;">\${item[4]}</td>
-                            <td style="padding:15px; border-bottom:1px solid #eee;"><span style="padding:5px 10px; border-radius:15px; font-size:11px; font-weight:bold; \${stColor}">\${st}</span></td>
+                            <td style="padding:15px; border-bottom:1px solid #eee;"><span style="padding:5px 10px; border-radius:15px; font-size:11px; font-weight:bold; \${stColor}">\${statusVal}</span></td>
                             <td style="padding:15px; border-bottom:1px solid #eee;">
-                                <button onclick="window.open('\${item[3]}','_blank')" style="background:#3498db; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fas fa-map"></i></button>
-                                <button onclick="updateStatus(\${realID}, 'Proses')" style="background:#f1c40f; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fas fa-hard-hat"></i></button>
-                                <button onclick="updateStatus(\${realID}, 'Selesai')" style="background:#2ecc71; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fas fa-check"></i></button>
-                                <button onclick="hapusData(\${realID})" style="background:#e74c3c; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                                <button type="button" onclick="window.open('\${item[3]}','_blank')" style="background:#3498db; color:white; padding:8px; border-radius:5px;" title="Peta"><i class="fas fa-map"></i></button>
+                                <button type="button" onclick="updateStatus(\${realRowIndex}, 'Proses')" style="background:#f1c40f; color:white; padding:8px; border-radius:5px;" title="Proses"><i class="fas fa-hard-hat"></i></button>
+                                <button type="button" onclick="updateStatus(\${realRowIndex}, 'Selesai')" style="background:#2ecc71; color:white; padding:8px; border-radius:5px;" title="Selesai"><i class="fas fa-check"></i></button>
+                                <button type="button" onclick="hapusData(\${realRowIndex})" style="background:#e74c3c; color:white; padding:8px; border-radius:5px;" title="Hapus"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>\`;
                 });
-            } catch (e) { tbody.innerHTML = "Gagal muat data."; }
+            } catch (e) { tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Gagal memuat data. Periksa URL SAKTI.</td></tr>"; }
         }
         window.onload = loadLaporan;
     </script>
@@ -103,4 +129,4 @@ cat << EOF > modul/admin/index.html
 </html>
 EOF
 
-echo "✅ Berhasil Diperbaiki. Masalah URL pada aksi tombol sudah diatasi."
+echo "✅ Berhasil. Tombol Admin sekarang menggunakan metode 'Safe-Ping' untuk mencegah 404."
