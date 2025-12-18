@@ -6,52 +6,54 @@ if(!label) window.location.href="../admin/login.html";
 document.getElementById('op-name').innerText = label;
 
 let lat = "", lng = "";
-let alamatLengkap = "";
+let wilayahInfo = "Lokasi Luar Jangkauan";
 
-async function trackGPS() {
+async function ambilLokasi() {
     const box = document.getElementById('gps-box');
-    box.innerHTML = "⌛ Mencari Satelit & Mendeteksi Wilayah...";
+    box.innerHTML = "⌛ Melacak Satelit & Wilayah...";
     box.style.background = "#fff3e0";
-    box.style.color = "#e65100";
-    
+
     navigator.geolocation.getCurrentPosition(async (p) => {
         lat = p.coords.latitude; 
         lng = p.coords.longitude;
         
         try {
-            // REVERSE GEOCODING UNTUK CEK KELURAHAN/KECAMATAN
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
-            const data = await res.json();
+            // API Reverse Geocoding (Nominatim)
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+            const data = await response.json();
             
-            const v = data.address;
-            const kel = v.village || v.suburb || v.neighbourhood || "Tidak Terdeteksi";
-            const kec = v.city_district || v.district || "Tidak Terdeteksi";
+            const addr = data.address;
+            const kel = addr.village || addr.suburb || addr.neighbourhood || "Kelurahan tdk terdeteksi";
+            const kec = addr.city_district || addr.district || "Kecamatan tdk terdeteksi";
             
-            alamatLengkap = `Kel. ${kel}, Kec. ${kec}`;
+            wilayahInfo = `${kel}, ${kec}`;
             
-            box.innerHTML = `✅ LOKASI TERKUNCI<br><b style="font-size:14px; color:#1b5e20;">${alamatLengkap}</b><br><small>${lat}, ${lng}</small>`;
+            box.innerHTML = `✅ TERKUNCI<br><span style="color:#2e7d32; font-size:14px;">${wilayahInfo}</span><br><small>${lat}, ${lng}</small>`;
             box.style.background = "#e8f5e9";
             box.style.color = "#2e7d32";
+            box.style.borderColor = "#2e7d32";
             
-        } catch (e) {
-            box.innerHTML = "✅ KOORDINAT TERKUNCI (Gagal deteksi nama wilayah)";
+        } catch (err) {
+            box.innerHTML = "✅ TERKUNCI<br><small>Gagal mendeteksi nama wilayah, tapi koordinat didapat.</small>";
+            box.style.background = "#e8f5e9";
         }
-    }, () => {
-        alert("Gagal melacak! Pastikan GPS HP Aktif.");
-        box.innerText = "❌ GPS Gagal";
+    }, (err) => {
+        alert("GPS ERROR: Mohon izinkan akses lokasi di browser/HP Anda.");
+        box.innerText = "❌ Gagal mengunci lokasi";
     }, { enableHighAccuracy: true });
 }
 
-async function kirim() {
+async function kirimLaporan() {
     const file = document.getElementById('foto').files[0];
     const kat = document.getElementById('kat').value;
     const ket = document.getElementById('ket').value;
     const btn = document.getElementById('btnLapor');
 
-    if(!lat || !lng) return alert("Kunci LOKASI GPS dulu!");
-    if(!file) return alert("Foto bukti wajib ada!");
+    if(!lat || !lng) return alert("Kunci GPS dulu Pak!");
+    if(!file) return alert("Foto bukti wajib!");
+    if(!ket) return alert("Keterangan wajib!");
 
-    btn.innerText = "⏳ SEDANG MENGIRIM...";
+    btn.innerText = "⏳ MENGIRIM...";
     btn.disabled = true;
 
     try {
@@ -60,10 +62,8 @@ async function kirim() {
         let resImg = await fetch("https://api.imgbb.com/1/upload?key=" + IMGBB, {method:"POST", body:fd});
         let dataImg = await resImg.json();
         
+        // Format Google Maps Link
         const mapsUrl = "https://www.google.com/maps?q=" + lat + "," + lng;
-
-        // Keterangan otomatis ditambah nama wilayah hasil deteksi GPS
-        const keteranganFinal = `[${alamatLengkap}] ${ket}`;
 
         await fetch(SAKTI, {
             method: 'POST',
@@ -71,7 +71,7 @@ async function kirim() {
             body: JSON.stringify({
                 nama: label,
                 kategori: kat,
-                keterangan: keteranganFinal,
+                keterangan: `[${wilayahInfo}] ${ket}`,
                 lokasi: mapsUrl,
                 foto: dataImg.data.url
             })
@@ -80,8 +80,8 @@ async function kirim() {
         alert("Laporan Berhasil Terkirim!");
         window.location.reload();
     } catch(e) {
-        alert("Gagal Kirim!");
-        btn.innerText = "🚀 KIRIM LAPORAN";
+        alert("Gagal Kirim! Cek Koneksi.");
+        btn.innerText = "🚀 KIRIM KE DASHBOARD";
         btn.disabled = false;
     }
 }
