@@ -8,25 +8,24 @@
 </head>
 <body>
     <div class="app-header">
-        <div class="header-btn"></div>
+        <div class="header-icon"></div>
         <h1>GARDA DUMAI KOTA</h1>
-        <a href="modul/admin/login.html" class="header-btn"><i class="fas fa-user-shield"></i></a>
+        <a href="modul/admin/login.html" class="header-icon"><i class="fas fa-user-shield"></i></a>
     </div>
     <div class="container">
         <div class="card" style="background: var(--dark); color: white; text-align: center;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png" width="60" style="margin-bottom: 10px;">
-            <div id="msg-pengumuman" style="font-size: 13px; font-weight: 500;">Memuat Info...</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png" width="60">
+            <div id="msg-info" style="font-size: 13px; margin-top: 10px;">Memuat informasi...</div>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="card" style="margin:0;"><small>GEMPA</small><h3 id="g-mag">--</h3><div id="g-loc" style="font-size:9px;">...</div></div>
-            <div class="card" style="margin:0;"><small>CUACA</small><h3 id="w-temp">--°C</h3><div id="w-desc" style="font-size:9px;">...</div></div>
+            <div class="card" style="margin:0;"><small>MAGNITUDE</small><h3 id="g-mag" style="margin:5px 0;">--</h3><div id="g-loc" style="font-size:9px;">...</div></div>
+            <div class="card" style="margin:0;"><small>SUHU</small><h3 id="w-temp" style="margin:5px 0;">--°C</h3><div id="w-desc" style="font-size:9px;">...</div></div>
         </div>
         <a href="modul/aksi/index.html" class="btn-main" style="background: #d32f2f; margin-top: 15px;"><i class="fas fa-bolt"></i>&nbsp; SOS DARURAT</a>
     </div>
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active"><i class="fas fa-house"></i>Home</a>
         <a href="modul/peta/index.html" class="nav-item"><i class="fas fa-map-location-dot"></i>Peta</a>
-        <a href="modul/aksi/index.html" class="nav-item"><i class="fas fa-circle-exclamation"></i>Darurat</a>
         <a href="modul/operator/index.html" class="nav-item"><i class="fas fa-plus-circle"></i>Lapor</a>
     </nav>
     <script>
@@ -39,7 +38,7 @@
                 document.getElementById('w-temp').innerText = w.data[0].cuaca[0][0].t + "°C";
                 document.getElementById('w-desc').innerText = w.data[0].cuaca[0][0].weather_desc;
                 const s = await (await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec")).json();
-                document.getElementById('msg-pengumuman').innerText = s.info[0][1];
+                document.getElementById('msg-info').innerText = s.info[0][1];
             } catch(e) {}
         }
         load();
