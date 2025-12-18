@@ -12,7 +12,7 @@ let infoKec = "";
 
 async function ambilLokasi() {
     const box = document.getElementById('gps-box');
-    box.innerHTML = "⌛ Mencari Data Wilayah (Auto Level 13-15)...";
+    box.innerHTML = "⌛ Analisis Data (Level 14)...";
     box.style.background = "#fff3e0";
 
     navigator.geolocation.getCurrentPosition(async (p) => {
@@ -20,36 +20,24 @@ async function ambilLokasi() {
         lng = p.coords.longitude;
         
         try {
-            // Kita tarik data Max Zoom 18 agar semua variabel tersedia di JSON
+            // Fetch Zoom 18 agar Baris 1 (Jalan) tetap dapat datanya.
             const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&zoom=18&accept-language=id-ID&format=jsonv2`);
             const data = await response.json();
             const addr = data.address;
             
-            // --- LOGIKA CERDAS 3 BARIS ---
+            // --- LOGIKA 3 BARIS (BARIS 2 FIX LEVEL 14) ---
 
             // BARIS 1: NAMA JALAN (Level 18)
             let nmJalan = addr.road || addr.pedestrian || addr.path || "";
             infoJalan = nmJalan ? `Jln. ${nmJalan}` : "(Jalan tdk terdeteksi)";
 
-            // BARIS 2: KELURAHAN (Cek Bertingkat 13 -> 14 -> 15)
-            let rawKel = "";
+            // BARIS 2: KELURAHAN (Fix Level 14)
+            // Di Level 14, OSM menampilkan: Village, Suburb, Neighbourhood, Quarter.
+            // Kita ambil apa saja yang tersedia di level ini.
+            let nmKel = addr.village || addr.suburb || addr.neighbourhood || addr.quarter || "";
             
-            // Cek 1: Level 13 (Kelurahan Murni)
-            if (addr.village) rawKel = addr.village;
-            else if (addr.suburb) rawKel = addr.suburb;
-            else if (addr.town) rawKel = addr.town;
-            
-            // Cek 2: Level 14 (Lingkungan - Jika Lvl 13 kosong)
-            else if (addr.neighbourhood) rawKel = addr.neighbourhood;
-            
-            // Cek 3: Level 15 (Dusun/Quarter - Jika Lvl 14 kosong)
-            else if (addr.quarter) rawKel = addr.quarter;
-            else if (addr.hamlet) rawKel = addr.hamlet;
-            
-            // Fallback terakhir
-            else rawKel = "Wilayah Tidak Terdeteksi";
-
-            infoKel = `Kel. ${rawKel}`;
+            if(!nmKel) nmKel = "Wilayah Tidak Terdeteksi";
+            infoKel = `Kel. ${nmKel}`;
 
             // BARIS 3: KECAMATAN (Level 12)
             let nmKec = addr.city_district || addr.district || addr.city || "Dumai";
