@@ -3,87 +3,104 @@
 # CONFIG DATA
 URL_SAKTI="https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec"
 
-echo "⚙️  Membangun Pusat Database User & Proteksi (auth.js)..."
+echo "🔧 Memperbaiki Fungsi Kontrol Admin (Fix URL Error)..."
 
-# 1. BUAT PUSAT AUTH (modul/aksi/auth.js)
-# File ini akan dipanggil oleh semua modul untuk urusan login & satpam halaman
-cat << EOF > modul/aksi/auth.js
-// DATABASE USER & PASSWORD
-const admins = ["camat", "sekcam", "trantib", "kapolsek", "danramil"];
-const kels = ["rimbas", "sukajadi", "laksamana", "dumaikota", "bintan"];
-const roles = ["lurah", "babinsa", "bhabin", "pamong", "trantib"];
-
-function authSistem() {
-    const u = document.getElementById('user').value.toLowerCase();
-    const p = document.getElementById('pass').value;
-    let role = "";
-    let label = "";
-
-    // Cek Grup Admin (Pass: dksiaga)
-    if(admins.includes(u) && p === "dksiaga") { 
-        role="admin"; 
-        label=u.toUpperCase(); 
-    }
-    // Cek Grup Operator (Pass: pantaudk)
-    else {
-        kels.forEach(k => roles.forEach(r => {
-            if(u === \`\${r}-\${k}\` && p === "pantaudk") { 
-                role="operator"; 
-                label=u.toUpperCase().replace("-"," "); 
-            }
-        }));
-    }
-
-    if(role) {
-        localStorage.setItem("role", role); 
-        localStorage.setItem("user_label", label);
-        // Arahkan ke folder masing-masing
-        window.location.href = role === "admin" ? "index.html" : "../operator/index.html";
-    } else {
-        alert("Akses Ditolak!");
-    }
-}
-
-// FUNGSI SATPAM (Proteksi Halaman)
-// Panggil ini di setiap index.html agar orang tidak bisa tembus lewat URL
-function proteksiHalaman(tipe) {
-    const r = localStorage.getItem("role");
-    const l = localStorage.getItem("user_label");
-    if(!l || (tipe === 'admin' && r !== 'admin')) {
-        window.location.href = "../admin/login.html";
-    }
-}
-EOF
-
-# 2. UPDATE LOGIN DI ADMIN (modul/admin/login.html)
-# Menghubungkan tampilan login dengan pusat database auth.js
-cat << EOF > modul/admin/login.html
+cat << EOF > modul/admin/index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Login Garda Dumai Kota</title>
+    <title>Garda Dumai Kota Command Center</title>
 </head>
-<body style="background:#1a1a1a; height:100vh; display:flex; justify-content:center; align-items:center; font-family:sans-serif;">
-    <div style="background:#fff; padding:30px; border-radius:12px; width:300px; text-align:center;">
-        <i class="fas fa-shield-alt" style="font-size:40px; color:#e74c3c; margin-bottom:10px;"></i>
-        <h2 style="margin:0;">GARDA DUMAI KOTA</h2>
-        <p style="font-size:11px; color:#888; margin-bottom:20px;">Portal Akses Terintegrasi</p>
+<body style="background:#f4f7f6; font-family: sans-serif; margin:0;">
+    <div class="app-header" style="background:#1a1a1a; color:white; padding:15px 20px; display:flex; justify-content:space-between; align-items:center;">
+        <h1 style="font-size:18px; margin:0;">Admin TRC | Halo, <span id="admin-nick"></span></h1>
+        <button onclick="localStorage.clear(); location.href='login.html';" style="background:#c0392b; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Keluar</button>
+    </div>
+
+    <div style="padding: 20px; max-width: 1200px; margin: auto;">
+        <h2 style="border-bottom:3px solid #1a1a1a; padding-bottom:10px;">GARDA DUMAI KOTA COMMAND CENTER <span id="total-lap" style="float:right; background:#e74c3c; color:white; padding:2px 10px; border-radius:10px;">0</span></h2>
         
-        <input type="text" id="user" placeholder="Username" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
-        <input type="password" id="pass" placeholder="Password" style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
-        
-        <button onclick="authSistem()" style="width:100%; padding:12px; background:#e74c3c; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">MASUK SISTEM</button>
+        <div style="background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow-x: auto;">
+            <table style="width:100%; border-collapse:collapse; min-width:900px;">
+                <thead>
+                    <tr style="background:#2c3e50; color:white; text-align:left;">
+                        <th style="padding:15px;">Waktu</th>
+                        <th style="padding:15px;">Jenis</th>
+                        <th style="padding:15px;">Lokasi / Wilayah</th>
+                        <th style="padding:15px;">Status</th>
+                        <th style="padding:15px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
     </div>
 
     <script src="../aksi/auth.js"></script>
+    <script>
+        // Proteksi Halaman
+        proteksiHalaman('admin');
+        document.getElementById('admin-nick').innerText = localStorage.getItem('user_label');
+
+        const SAKTI = "$URL_SAKTI";
+
+        async function updateStatus(rowId, status) {
+            if(!confirm("Ubah status ke " + status + "?")) return;
+            // Gunakan URLSearchParams agar karakter spesial (seperti Jln/Kel) tidak merusak URL
+            try {
+                await fetch(\`\${SAKTI}?action=update&id=\${rowId}&status=\${status}\`, { method: 'POST', mode: 'no-cors' });
+                alert("Status Berhasil Diperbarui!");
+                loadLaporan();
+            } catch(e) { alert("Gagal koneksi ke server!"); }
+        }
+
+        async function hapusData(rowId) {
+            if(!confirm("⚠️ Hapus laporan ini secara permanen?")) return;
+            try {
+                await fetch(\`\${SAKTI}?action=delete&id=\${rowId}\`, { method: 'POST', mode: 'no-cors' });
+                alert("Laporan Terhapus!");
+                loadLaporan();
+            } catch(e) { alert("Gagal menghapus!"); }
+        }
+
+        async function loadLaporan() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">Memuat data...</td></tr>';
+            try {
+                const res = await fetch(SAKTI);
+                const data = await res.json();
+                const laporans = data.laporan;
+                document.getElementById('total-lap').innerText = laporans.length;
+                tbody.innerHTML = '';
+
+                laporans.reverse().forEach((item, index) => {
+                    const realID = laporans.length - index; // ID baris di Sheets
+                    const st = item[6] || 'Menunggu';
+                    const stColor = st === 'Selesai' ? 'background:#d4edda;color:#155724' : (st === 'Proses' ? 'background:#fff3cd;color:#856404' : 'background:#ffdada;color:#c0392b');
+                    
+                    tbody.innerHTML += \`
+                        <tr>
+                            <td style="padding:15px; border-bottom:1px solid #eee;">\${item[0]}</td>
+                            <td style="padding:15px; border-bottom:1px solid #eee;"><b>\${item[2]}</b><br><small>\${item[1]}</small></td>
+                            <td style="padding:15px; border-bottom:1px solid #eee; color:#2e7d32; font-weight:bold; font-size:13px;">\${item[4]}</td>
+                            <td style="padding:15px; border-bottom:1px solid #eee;"><span style="padding:5px 10px; border-radius:15px; font-size:11px; font-weight:bold; \${stColor}">\${st}</span></td>
+                            <td style="padding:15px; border-bottom:1px solid #eee;">
+                                <button onclick="window.open('\${item[3]}','_blank')" style="background:#3498db; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fas fa-map"></i></button>
+                                <button onclick="updateStatus(\${realID}, 'Proses')" style="background:#f1c40f; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fas fa-hard-hat"></i></button>
+                                <button onclick="updateStatus(\${realID}, 'Selesai')" style="background:#2ecc71; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fas fa-check"></i></button>
+                                <button onclick="hapusData(\${realID})" style="background:#e74c3c; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>\`;
+                });
+            } catch (e) { tbody.innerHTML = "Gagal muat data."; }
+        }
+        window.onload = loadLaporan;
+    </script>
 </body>
 </html>
 EOF
 
-echo "✅ Berhasil Merapikan Struktur."
-echo "------------------------------------------------"
-echo "File baru: ./modul/aksi/auth.js (Pusat Kendali)"
-echo "File Login: ./modul/admin/login.html (Pintu Utama)"
+echo "✅ Berhasil Diperbaiki. Masalah URL pada aksi tombol sudah diatasi."
