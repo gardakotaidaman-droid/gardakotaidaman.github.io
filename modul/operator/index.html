@@ -1,50 +1,45 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lapor Kejadian</title>
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="app-header">
-        <a href="../../index.html" style="color:white;"><i class="fas fa-house-chimney"></i></a>
-        <div style="font-weight:bold;">OPERATOR PANEL</div>
-        <i class="fas fa-power-off" onclick="localStorage.clear(); location.href='../admin/login.html'"></i>
+        <a href="../../index.html" class="header-icon"><i class="fas fa-arrow-left"></i></a>
+        <h1>LAPOR KEJADIAN</h1>
+        <div style="width:20px;"></div>
     </div>
+
     <div class="container">
-        <div class="card" style="background:#e8f5e9; border-left:5px solid #2e7d32;">
-            <small>Petugas:</small> <h4 id="op-name" style="margin:0;">-</h4>
-        </div>
         <div class="card">
-            <button class="btn-main" onclick="track()"><i class="fas fa-crosshairs"></i> KUNCI LOKASI GPS</button>
-            <p id="gps-msg" style="text-align:center; font-size:11px; margin:5px 0;">GPS belum dikunci</p>
-            <div id="map-preview" style="height:150px; width:100%; border-radius:12px; display:none; border:2px solid #0d47a1; margin-top:10px;"></div>
-            <hr>
-            <select id="kat">
-                <option value="Banjir Rob / Pasang Keling">🌊 Banjir Rob / Pasang Keling</option>
-                <option value="Drainase Tersumbat / Banjir">🕳️ Drainase Tersumbat / Banjir</option>
-                <option value="Penumpukan Sampah">🗑️ Penumpukan Sampah</option>
-                <option value="Kamtibmas / Tawuran">👮 Kamtibmas / Tawuran</option>
-                <option value="Kebakaran Lahan / Karhutla">🔥 Kebakaran Lahan / Karhutla</option>
-                <option value="Lampu Jalan Mati (PJU)">💡 Lampu Jalan Mati (PJU)</option>
-                <option value="Infrastruktur / Jalan Rusak">🛣️ Infrastruktur / Jalan Rusak</option>
-                <option value="Pohon Tumbang / Gangguan Kabel">🌳 Pohon Tumbang</option>
-                <option value="Penertiban PKL / Perda">🏪 Penertiban PKL / Perda</option>
-                <option value="Layanan Publik / Administrasi">📄 Layanan Publik / Administrasi</option>
-                <option value="Lainnya">❓ Kejadian Lainnya</option>
+            <div class="card-title">Lokasi Kejadian</div>
+            <button class="btn-main" onclick="track()" style="background:var(--dark); margin-bottom:10px;">
+                <i class="fas fa-crosshairs" style="margin-right:8px;"></i> AMBIL TITIK GPS
+            </button>
+            <p id="gps-msg" style="text-align:center; font-size:12px; color:var(--grey); margin:0;">Wajib dikunci sebelum lapor</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Detail Laporan</div>
+            <select id="kat" style="width:100%; padding:15px; border-radius:12px; margin-bottom:15px; border:1px solid #ddd; background:#f9f9f9; font-size:14px;">
+                <option>🌊 Banjir Rob</option>
+                <option>🔥 Kebakaran</option>
+                <option>🗑️ Sampah Menumpuk</option>
+                <option>🛣️ Jalan Rusak</option>
+                <option>⚖️ Ketertiban Umum</option>
             </select>
-            <textarea id="ket" placeholder="Keterangan kejadian..."></textarea>
-            <input type="file" id="foto" capture="camera">
-            <button class="btn-main" id="btnKirim" onclick="lapor()">🚀 KIRIM LAPORAN SEKARANG</button>
+            <textarea id="ket" placeholder="Ceritakan kronologi singkat..." style="width:100%; padding:15px; border-radius:12px; height:120px; border:1px solid #ddd; background:#f9f9f9; font-size:14px; margin-bottom:15px;"></textarea>
+            
+            <div style="background:#f0f2f5; padding:10px; border-radius:10px; text-align:center; margin-bottom:20px;">
+                <input type="file" id="foto" capture="camera" style="width:100%;">
+            </div>
+
+            <button class="btn-main" id="btnKirim" onclick="lapor()">KIRIM LAPORAN</button>
         </div>
     </div>
-    <nav class="bottom-nav">
-        <a href="../../index.html" class="nav-item"><i class="fas fa-house"></i>Home</a>
-        <a href="../peta/index.html" class="nav-item"><i class="fas fa-map-location-dot"></i>Peta</a>
-        <a href="index.html" class="nav-item active"><i class="fas fa-edit"></i>Lapor</a>
-    </nav>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="operator.js"></script>
 </body>
 </html>

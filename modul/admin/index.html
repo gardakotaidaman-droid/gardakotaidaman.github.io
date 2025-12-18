@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Command Center</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Command Center</title>
 </head>
 <body>
     <div class="app-header">
-        <a href="../../index.html" style="color:white;"><i class="fas fa-house-chimney"></i></a>
-        <div style="font-weight:bold;">COMMAND CENTER</div>
-        <i class="fas fa-power-off" onclick="localStorage.clear(); location.href='login.html'"></i>
+        <h1>COMMAND CENTER</h1>
+        <a href="../../index.html" class="header-icon"><i class="fas fa-sign-out-alt"></i></a>
     </div>
+
     <div class="container">
-        <div class="card">
-            <h4><i class="fas fa-fingerprint"></i> Log Aktivitas</h4>
-            <div id="log-list" style="max-height:100px; overflow-y:auto; font-size:11px;">Memuat...</div>
+        <div id="wf-list">
+            <div style="text-align:center; padding:20px; color:#999;">
+                <i class="fas fa-circle-notch fa-spin"></i> Memuat Laporan...
+            </div>
         </div>
-        <div id="wf-list">Memuat laporan...</div>
     </div>
+
+    <nav class="bottom-nav">
+        <a href="../../index.html" class="nav-item"><i class="fas fa-house"></i></a>
+        <a href="../peta/index.html" class="nav-item"><i class="fas fa-map"></i></a>
+        <a href="index.html" class="nav-item active"><i class="fas fa-shield-alt"></i></a>
+    </nav>
+
     <script src="admin.js"></script>
 </body>
 </html>
