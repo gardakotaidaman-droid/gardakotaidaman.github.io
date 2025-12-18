@@ -14,21 +14,17 @@ async function ambilLokasi() {
         lat = p.coords.latitude; 
         lng = p.coords.longitude;
         try {
-            // BARIS 1: Ambil Nama Jalan (Zoom 18)
+            // TRACKING 3 BARIS (18=Jalan, 14=Kelurahan, 12=Kecamatan)
             const res1 = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&zoom=18&accept-language=id-ID&format=jsonv2`);
             const d1 = await res1.json();
-            
-            // BARIS 2: Ambil Kelurahan (Zoom 14)
             const res2 = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&zoom=14&accept-language=id-ID&format=jsonv2`);
             const d2 = await res2.json();
-            
-            // BARIS 3: Ambil Kecamatan (Zoom 12)
             const res3 = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&zoom=12&accept-language=id-ID&format=jsonv2`);
             const d3 = await res3.json();
 
             const jln = d1.address.road || d1.address.pedestrian || "Jln. Lokasi";
-            const kel = d2.address.village || d2.address.suburb || d2.address.neighbourhood || "Kelurahan";
-            const kec = d3.address.city_district || d3.address.district || "Kecamatan";
+            const kel = d2.address.village || d2.address.suburb || "Kelurahan";
+            const kec = d3.address.city_district || "Kecamatan";
 
             teksWilayah = `[Kel. ${kel}, ${kec} | ${jln}]`;
             box.innerHTML = `✅ TERKUNCI<br><small style="font-size:10px;">${teksWilayah}</small>`;
@@ -60,11 +56,11 @@ async function kirimLaporan() {
         let rImg = await fetch("https://api.imgbb.com/1/upload?key=" + IMGBB, {method:"POST", body:fd});
         let dImg = await rImg.json();
 
-        // 2. KUNCI KOORDINAT MURNI (SIMBOL $ SUDAH BENAR)
-        // Ini agar di Admin tidak Error 404
+        // 2. KOREKSI LINK: WAJIB PAKAI SIMBOL $ AGAR JADI KOORDINAT
+        // Link ini yang akan diklik di Admin tanpa bikin 404
         const linkMapsMurni = `https://www.google.com/maps?q=${lat},${lng}`;
 
-        // 3. GABUNGKAN WILAYAH KE KETERANGAN
+        // 3. TEKS WILAYAH MASUK KE KETERANGAN
         const keteranganFinal = `${teksWilayah} ${document.getElementById('ket').value}`;
 
         // 4. KIRIM KE SAKTI (GOOGLE SHEETS)
