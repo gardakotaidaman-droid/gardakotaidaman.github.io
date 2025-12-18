@@ -1,14 +1,5 @@
-#!/bin/bash
-
-# CONFIG DATA
-URL_SAKTI="https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec"
-IMGBB_KEY="2e07237050e6690770451ded20f761b5"
-
-echo "🔧 Menambahkan Fitur Deteksi Wilayah Otomatis..."
-
-cat << EOF > modul/operator/operator.js
-const SAKTI = "$URL_SAKTI";
-const IMGBB = "$IMGBB_KEY";
+const SAKTI = "https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec";
+const IMGBB = "2e07237050e6690770451ded20f761b5";
 const label = localStorage.getItem("user_label");
 
 if(!label) window.location.href="../admin/login.html";
@@ -29,16 +20,16 @@ async function trackGPS() {
         
         try {
             // REVERSE GEOCODING UNTUK CEK KELURAHAN/KECAMATAN
-            const res = await fetch(\`https://nominatim.openstreetmap.org/reverse?format=json&lat=\${lat}&lon=\${lng}&zoom=18&addressdetails=1\`);
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
             const data = await res.json();
             
             const v = data.address;
             const kel = v.village || v.suburb || v.neighbourhood || "Tidak Terdeteksi";
             const kec = v.city_district || v.district || "Tidak Terdeteksi";
             
-            alamatLengkap = \`Kel. \${kel}, Kec. \${kec}\`;
+            alamatLengkap = `Kel. ${kel}, Kec. ${kec}`;
             
-            box.innerHTML = \`✅ LOKASI TERKUNCI<br><b style="font-size:14px; color:#1b5e20;">\${alamatLengkap}</b><br><small>\${lat}, \${lng}</small>\`;
+            box.innerHTML = `✅ LOKASI TERKUNCI<br><b style="font-size:14px; color:#1b5e20;">${alamatLengkap}</b><br><small>${lat}, ${lng}</small>`;
             box.style.background = "#e8f5e9";
             box.style.color = "#2e7d32";
             
@@ -72,7 +63,7 @@ async function kirim() {
         const mapsUrl = "https://www.google.com/maps?q=" + lat + "," + lng;
 
         // Keterangan otomatis ditambah nama wilayah hasil deteksi GPS
-        const keteranganFinal = \`[\${alamatLengkap}] \${ket}\`;
+        const keteranganFinal = `[${alamatLengkap}] ${ket}`;
 
         await fetch(SAKTI, {
             method: 'POST',
@@ -94,6 +85,3 @@ async function kirim() {
         btn.disabled = false;
     }
 }
-EOF
-
-echo "✅ Fitur Deteksi Wilayah Aktif."
