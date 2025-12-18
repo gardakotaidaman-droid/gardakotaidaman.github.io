@@ -2,167 +2,194 @@
 
 # CONFIG DATA
 URL_SAKTI="https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec"
-IMGBB_KEY="2e07237050e6690770451ded20f761b5"
+WA_CAMAT="6285172206884"
+IMG_LOGO="https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png"
 
-echo "🔧 MEMPERBAIKI MODUL OPERATOR (DASHBOARD & FORM)..."
+echo "🚀 MEMULAI RESTORASI TOTAL DASHBOARD, PETA, DAN AKSI..."
 
-# 1. FIX CSS GLOBAL (Agar Navigasi Tidak Menutup Konten)
-cat << 'EOF' > css/style.css
-:root { --primary: #0066FF; --dark: #001a4d; --bg: #f4f7f6; --h: 60px; --nav: 70px; }
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { 
-    font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background: var(--bg); 
-    padding-top: calc(var(--h) + 10px); 
-    padding-bottom: calc(var(--nav) + 30px); /* Tambah ruang agar tidak tertutup nav */
-}
-.app-header { 
-    height: var(--h); background: var(--dark); color: white; 
-    display: flex; align-items: center; justify-content: space-between; 
-    padding: 0 20px; position: fixed; top: 0; width: 100%; z-index: 2000; 
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
-}
-.app-header h1 { font-size: 14px; margin: 0; text-transform: uppercase; font-weight: 800; }
-.container { padding: 15px; max-width: 500px; margin: auto; }
-.card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.btn-main { 
-    height: 50px; display: flex; align-items: center; justify-content: center; 
-    background: var(--primary); color: white; border: none; border-radius: 12px; 
-    width: 100%; font-weight: 700; text-decoration: none; cursor: pointer; font-size: 15px;
-}
-.bottom-nav { 
-    height: var(--nav); position: fixed; bottom: 0; width: 100%; 
-    background: white; display: flex; border-top: 1px solid #eee; z-index: 2000; 
-}
-.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aaa; text-decoration: none; font-size: 10px; }
-.nav-item.active { color: var(--primary); font-weight: bold; }
-.nav-item i { font-size: 22px; margin-bottom: 3px; }
-label { font-size: 11px; font-weight: 800; color: var(--dark); display: block; margin-top: 15px; margin-bottom: 5px; text-transform: uppercase; }
-input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; background: #fafafa; font-size: 14px; }
-EOF
+# 1. PASTIKAN SEMUA FOLDER ADA
+mkdir -p modul/peta modul/aksi css
 
-# 2. FIX MODUL OPERATOR (INDEX.HTML) - KATEGORI LENGKAP
-cat << 'EOF' > modul/operator/index.html
+# 2. UPDATE DASHBOARD UTAMA (index.html) - FIX BMKG & PENGUMUMAN
+cat << EOF > index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Lapor - Garda Dumai Kota</title>
+    <title>Garda Dumai Kota</title>
 </head>
 <body>
+    <div id="alert-cuaca" style="display:none; background:#d32f2f; color:white; padding:10px; font-weight:bold; font-size:12px; border-bottom:3px solid yellow;">
+        <marquee id="msg-cuaca">⚠️ WASPADA: Memeriksa Peringatan Dini BMKG...</marquee>
+    </div>
+
     <div class="app-header">
-        <h1>PANEL OPERATOR</h1>
-        <i class="fas fa-power-off" onclick="localStorage.clear(); location.href='../admin/login.html'"></i>
+        <img src="$IMG_LOGO" width="35">
+        <h1>GARDA DUMAI KOTA</h1>
+        <a href="modul/admin/login.html" style="color:var(--dark); font-size:20px;"><i class="fas fa-user-shield"></i></a>
     </div>
 
     <div class="container">
-        <div class="card" style="background: #e3f2fd; border-left: 5px solid #0066FF;">
-            <small style="color: #0066FF; font-weight: bold;">PETUGAS AKTIF:</small>
-            <h4 id="op-name" style="margin: 5px 0 0 0; color: #001a4d;">-</h4>
+        <div class="card" style="background: linear-gradient(135deg, #002171, #0d47a1); color: white;">
+            <div style="font-size:11px; text-transform:uppercase; opacity:0.8; font-weight:bold; margin-bottom:5px;">Pengumuman Masyarakat</div>
+            <div id="msg-pengumuman" style="font-size:14px; font-weight:600; line-height:1.4;">
+                📢 Selamat datang di layanan GARDA DUMAI KOTA. Gunakan tombol SOS jika dalam keadaan darurat!
+            </div>
         </div>
 
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+             <div class="card" style="margin:0; border-left:4px solid #ef6c00;">
+                <small style="color:#ef6c00; font-weight:bold; font-size:10px;">INFO GEMPA</small>
+                <h3 id="g-mag" style="margin:5px 0 0 0; font-size:18px;">--</h3>
+                <div id="g-loc" style="font-size:9px; color:#666; overflow:hidden; white-space:nowrap;">Memuat...</div>
+            </div>
+             <div class="card" style="margin:0; border-left:4px solid #0066FF;">
+                <small style="color:#0066FF; font-weight:bold; font-size:10px;">CUACA DUMAI</small>
+                <h3 id="w-temp" style="margin:5px 0 0 0; font-size:18px;">--°C</h3>
+                <div id="w-desc" style="font-size:9px; color:#666;">Memuat...</div>
+            </div>
+        </div>
+
+        <a href="modul/aksi/index.html" class="btn-main" style="background:#d32f2f; box-shadow: 0 4px 15px rgba(211,47,47,0.4); margin-bottom:15px;">
+            <i class="fas fa-bolt" style="margin-right:10px;"></i> SOS & DARURAT
+        </a>
+        
         <div class="card">
-            <label>I. LOKASI KEJADIAN (GPS)</label>
-            <div id="gps-box" style="padding:15px; background:#f5f5f5; border: 2px dashed #ccc; border-radius:10px; text-align:center; font-size:12px; margin-bottom:10px; font-weight:bold;">📍 Belum Mengunci Titik</div>
-            <button class="btn-main" onclick="trackGPS()" style="background:#333; height: 40px;"><i class="fas fa-crosshairs"></i>&nbsp; KUNCI GPS</button>
-            
-            <label>II. JENIS KEJADIAN</label>
-            <select id="kat">
-                <option>🌊 Banjir Rob / Pasang Keling</option>
-                <option>🕳️ Drainase Tersumbat / Banjir</option>
-                <option>🗑️ Penumpukan Sampah</option>
-                <option>👮 Kamtibmas / Tawuran</option>
-                <option>🔥 Kebakaran Lahan / Karhutla</option>
-                <option>💡 Lampu Jalan Mati (PJU)</option>
-                <option>🛣️ Infrastruktur / Jalan Rusak</option>
-                <option>🌳 Pohon Tumbang / Kabel</option>
-                <option>🏪 Penertiban PKL / Perda</option>
-                <option>📄 Layanan Publik / Administrasi</option>
-                <option>❓ Lainnya</option>
-            </select>
-
-            <label>III. DETAIL KETERANGAN</label>
-            <textarea id="ket" rows="3" placeholder="Sebutkan patokan lokasi & kondisi..."></textarea>
-
-            <label>IV. FOTO BUKTI LAPANGAN</label>
-            <input type="file" id="foto" accept="image/*" capture="camera">
-
-            <button class="btn-main" id="btnLapor" onclick="kirim()" style="margin-top:20px;">
-                <i class="fas fa-paper-plane"></i>&nbsp; KIRIM LAPORAN SEKARANG
-            </button>
+            <h4 style="margin:0 0 10px 0; font-size:14px; color:var(--dark);">SITUASI SAAT INI</h4>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:12px; color:#666;">Laporan Diproses</span>
+                <b id="st-proses" style="color:#ef6c00;">0</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+                <span style="font-size:12px; color:#666;">Laporan Selesai</span>
+                <b id="st-selesai" style="color:#2e7d32;">0</b>
+            </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="../../index.html" class="nav-item"><i class="fas fa-house"></i></a>
-        <a href="../peta/index.html" class="nav-item"><i class="fas fa-map"></i></a>
-        <a href="#" class="nav-item active"><i class="fas fa-plus-circle"></i></a>
+        <a href="index.html" class="nav-item active"><i class="fas fa-house"></i></a>
+        <a href="modul/peta/index.html" class="nav-item"><i class="fas fa-map-location-dot"></i></a>
+        <a href="modul/aksi/index.html" class="nav-item"><i class="fas fa-circle-exclamation"></i></a>
+        <a href="modul/operator/index.html" class="nav-item"><i class="fas fa-plus-circle" style="font-size:24px; color:var(--primary);"></i></a>
     </nav>
 
-    <script src="operator.js"></script>
+    <script>
+        const SAKTI = "$URL_SAKTI";
+        async function fetchBMKG() {
+            try {
+                // Gempa
+                const gRes = await fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json');
+                const g = (await gRes.json()).Infogempa.gempa;
+                document.getElementById('g-mag').innerText = g.Magnitude + " SR";
+                document.getElementById('g-loc').innerText = g.Wilayah;
+
+                // Cuaca Dumai Kota
+                const wRes = await fetch('https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=14.72.06.1001');
+                const w = (await wRes.json()).data[0].cuaca[0][0];
+                document.getElementById('w-temp').innerText = w.t + "°C";
+                document.getElementById('w-desc').innerText = w.weather_desc;
+
+                // Stats & Pengumuman
+                const sRes = await fetch(SAKTI);
+                const s = await sRes.json();
+                document.getElementById('st-proses').innerText = s.laporan.filter(i => i[6] !== 'Selesai' && i[6] !== 'Status').length;
+                document.getElementById('st-selesai').innerText = s.laporan.filter(i => i[6] === 'Selesai').length;
+                if(s.info[0]) document.getElementById('msg-pengumuman').innerText = s.info[0][1];
+            } catch(e) {}
+        }
+        fetchBMKG(); setInterval(fetchBMKG, 60000);
+    </script>
 </body>
 </html>
 EOF
 
-# 3. FIX MODUL OPERATOR (OPERATOR.JS) - VALID MAPS URL
-cat << EOF > modul/operator/operator.js
-const SAKTI = "$URL_SAKTI";
-const IMGBB = "$IMGBB_KEY";
-
-const label = localStorage.getItem("user_label");
-if(!label) window.location.href="../admin/login.html";
-document.getElementById('op-name').innerText = label;
-
-let lat = "", lng = "";
-
-function trackGPS() {
-    const box = document.getElementById('gps-box');
-    box.innerText = "⌛ Menghubungkan Satelit...";
-    navigator.geolocation.getCurrentPosition(p => {
-        lat = p.coords.latitude; lng = p.coords.longitude;
-        box.innerHTML = "✅ LOKASI TERKUNCI";
-        box.style.background = "#e8f5e9"; box.style.color = "#2e7d32"; box.style.borderColor = "#2e7d32";
-    }, () => alert("Gagal! Aktifkan GPS HP Anda."), {enableHighAccuracy: true});
-}
-
-async function kirim() {
-    const file = document.getElementById('foto').files[0];
-    const ket = document.getElementById('ket').value;
-    const btn = document.getElementById('btnLapor');
-
-    if(!lat || !lng) return alert("Bapak belum mengunci LOKASI GPS!");
-    if(!file) return alert("Foto bukti wajib dilampirkan!");
-    if(!ket) return alert("Mohon isi keterangan kejadian!");
-
-    btn.innerText = "⌛ SEDANG MENGIRIM..."; btn.disabled = true;
-
-    try {
-        let fd = new FormData(); fd.append("image", file);
-        let rI = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB, {method:"POST", body:fd});
-        let dI = await rI.json();
+# 3. RESTORASI MODUL AKSI (FIX 404)
+cat << EOF > modul/aksi/index.html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SOS Darurat</title>
+</head>
+<body>
+    <div class="app-header">
+        <a href="../../index.html" style="color:var(--dark);"><i class="fas fa-arrow-left"></i></a>
+        <h1>AKSI DARURAT</h1>
+        <div style="width:20px;"></div>
+    </div>
+    <div class="container" style="text-align:center;">
+        <div class="card" style="padding:40px 20px;">
+            <div onclick="callSOS()" style="width:140px; height:140px; background:radial-gradient(#ff5252, #b71c1c); border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:900; box-shadow:0 10px 30px rgba(183,28,28,0.5); border:8px solid rgba(255,255,255,0.2); cursor:pointer;">SOS</div>
+            <p style="margin-top:20px; font-weight:bold; color:#b71c1c;">TEKAN UNTUK SITUASI DARURAT</p>
+        </div>
         
-        // --- FIX LINK MAPS: Menggunakan Google Maps Standard ---
-        const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng;
-
-        await fetch(SAKTI, { 
-            method:'POST', mode:'no-cors', 
-            body: JSON.stringify({ 
-                nama: label, 
-                kategori: document.getElementById('kat').value, 
-                keterangan: ket, 
-                lokasi: mapsUrl, 
-                foto: dI.data.url 
-            }) 
-        });
-
-        alert("Berhasil! Laporan sudah masuk ke Dashboard Camat.");
-        window.location.reload();
-    } catch(e) {
-        alert("Gangguan Koneksi!");
-        btn.innerText = "🚀 KIRIM LAPORAN SEKARANG"; btn.disabled = false;
-    }
-}
+        <div class="card">
+            <h4 style="margin-bottom:15px;">HUBUNGI PETUGAS</h4>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <a href="tel:112" class="btn-main" style="background:#b71c1c; font-size:12px;">📞 BPBD/112</a>
+                <a href="https://wa.me/$WA_CAMAT" class="btn-main" style="background:#2e7d32; font-size:12px;">🟢 WA CAMAT</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        function callSOS() {
+            if(confirm("Kirim sinyal SOS ke Command Center?")) {
+                window.location.href = "https://wa.me/$WA_CAMAT?text=🚨 *SINYAL SOS DARURAT!*%0AMohon bantuan segera ke lokasi saya!";
+            }
+        }
+    </script>
+</body>
+</html>
 EOF
 
-echo "✅ MODUL OPERATOR BERHASIL DIPERBAIKI."
+# 4. RESTORASI MODUL PETA (FIX 404 & LAYERS)
+cat << EOF > modul/peta/index.html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <title>Peta Sebaran</title>
+    <style>#map { width:100%; height:calc(100vh - 130px); }</style>
+</head>
+<body>
+    <div class="app-header">
+        <a href="../../index.html" style="color:var(--dark);"><i class="fas fa-arrow-left"></i></a>
+        <h1>PETA SITUASI</h1>
+        <div style="width:20px;"></div>
+    </div>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([1.67, 101.45], 13);
+        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+        
+        const base = { "Peta Jalan": osm, "Satelit": sat };
+        L.control.layers(base).addTo(map);
+
+        async function load() {
+            const r = await fetch("$URL_SAKTI");
+            const d = await r.json();
+            d.laporan.forEach(i => {
+                const m = i[4].match(/query=(-?\\d+\\.\\d+),(-?\\d+\\.\\d+)/);
+                if(m) L.marker([m[1], m[2]]).addTo(map).bindPopup(\`<b>\${i[1]}</b><br>\${i[2]}<br><small>\${i[6]}</small>\`);
+            });
+        }
+        load();
+    </script>
+</body>
+</html>
+EOF
+
+echo "-------------------------------------------------------"
+echo "✅ RESTORASI SELESAI"
+echo "📍 Dashboard: Gempa, Cuaca, Pengumuman AKTIF."
+echo "📍 Modul Aksi & Peta: FIXED (Tidak 404)."
+echo "-------------------------------------------------------"
