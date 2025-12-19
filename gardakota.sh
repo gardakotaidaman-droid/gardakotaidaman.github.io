@@ -1,9 +1,24 @@
 #!/bin/bash
 
 # ====== SETTING AWAL ======
-# default remote & branch (kalau mau dipaksa ke main, isi ORIGIN_BRANCH="main")
 ORIGIN_NAME="origin"
-ORIGIN_BRANCH=""
+ORIGIN_BRANCH=""   # kosong = pakai branch aktif
+
+# ====== FUNGSI: HAPUS .DS_Store ======
+clean_ds_store() {
+  echo "Menghapus semua file .DS_Store..."
+  # Hapus dari working directory
+  find . -name ".DS_Store" -type f -delete
+
+  # Pastikan .DS_Store di-ignore di repo ini
+  if [ ! -f .gitignore ]; then
+    touch .gitignore
+  fi
+  if ! grep -q ".DS_Store" .gitignore; then
+    echo ".DS_Store" >> .gitignore
+    echo "**/.DS_Store" >> .gitignore
+  fi
+}
 
 # ====== CEK GIT REPO ======
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
@@ -11,16 +26,10 @@ if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
   exit 1
 fi
 
-# ====== HAPUS FILE SAMPAH (.DS_Store) ======
-echo "Menghapus file .DS_Store..."
-find . -name ".DS_Store" -type f -delete
+# ====== PANGGIL FUNGSI BERSIH .DS_Store SEBELUM COMMIT ======
+clean_ds_store
 
-# Pastikan .DS_Store di-ignore ke depan
-if ! grep -q ".DS_Store" .gitignore 2>/dev/null; then
-  echo ".DS_Store" >> .gitignore
-fi
-
-# ====== TAMPILKAN STATUS ======
+# ====== STATUS SEBELUM COMMIT ======
 echo
 echo "Status git sebelum commit:"
 git status
@@ -38,7 +47,7 @@ echo
 echo "Menjalankan git add ."
 git add .
 
-# Cek apakah ada perubahan yang benar‑benar perlu di-commit
+# Cek apakah ada perubahan yang perlu di-commit
 if git diff --cached --quiet; then
   echo "Tidak ada perubahan untuk di-commit. Selesai."
   exit 0
