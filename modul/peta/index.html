@@ -4,306 +4,264 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peta Sebaran Laporan</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
-    <style>
-        body { margin: 0; padding: 0; font-family: sans-serif; overflow: hidden; }
-        #map { height: 100vh; width: 100%; z-index: 1; }
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        /* Floating Button untuk Buka/Tutup Filter */
-        .toggle-btn {
+    <style>
+        /* Layout Fix: Header - Map - Navbar */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--dark);
+        }
+
+        .app-header {
+            flex-shrink: 0;
+            z-index: 2000;
+        }
+
+        #map-wrapper {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+            background: #ddd;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .bottom-nav {
+            flex-shrink: 0;
+            z-index: 2000;
+        }
+
+        /* Filter Panel (Floating) */
+        .filter-toggle {
             position: absolute;
             top: 10px; left: 10px;
             z-index: 1000;
-            background: #2180a8;
+            background: var(--primary);
             color: white;
-            border: none;
-            padding: 10px 15px;
+            padding: 8px 15px;
             border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            cursor: pointer;
+            font-size: 12px;
             font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border: none;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
         }
 
-        /* Panel Filter (Hidden by default on mobile, or collapsible) */
         .filter-panel {
             position: absolute;
-            top: 60px; left: 10px;
-            width: 300px;
+            top: 50px; left: 10px;
+            width: 280px;
             background: rgba(255, 255, 255, 0.95);
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 999;
+            z-index: 1000;
             backdrop-filter: blur(5px);
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            transform-origin: top left;
+            transition: all 0.3s ease;
         }
 
-        /* Class untuk hide panel */
-        .panel-hidden {
-            transform: scale(0);
+        .hidden {
+            transform: translateY(-20px);
             opacity: 0;
             pointer-events: none;
         }
 
         .filter-group { margin-bottom: 10px; }
-        .filter-group label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; color: #555; }
+        .filter-group label { display: block; font-size: 10px; font-weight: bold; color: #666; margin-bottom: 3px; }
         .filter-group select, .filter-group input {
-            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px;
+            width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 5px; font-size: 12px;
         }
 
-        /* Stats Bar (Bawah) */
-        .stats-bar {
-            position: absolute;
-            bottom: 20px; left: 10px;
-            background: white;
-            padding: 8px 15px;
-            border-radius: 50px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 999;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            gap: 15px;
-        }
-        .stats-item span { color: #2180a8; }
-
-        /* Legend (Kanan Bawah) */
-        .legend {
-            position: absolute;
-            bottom: 20px; right: 10px;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 999;
-            font-size: 11px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .legend-item { display: flex; align-items: center; margin-bottom: 5px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; display: inline-block; }
-
-        /* Loading */
-        .loading {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.7); color: white; padding: 15px 25px;
-            border-radius: 8px; z-index: 2000; font-size: 14px;
+        /* Stats & Legend */
+        .map-stats {
+            position: absolute; bottom: 10px; left: 10px;
+            background: white; padding: 5px 10px; border-radius: 5px;
+            font-size: 10px; font-weight: bold; z-index: 900;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* Popup Styles */
-        .popup-content { width: 200px; }
-        .popup-row { margin-bottom: 5px; font-size: 12px; line-height: 1.4; }
-        .popup-img { width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-top: 5px; background: #eee; }
-        .btn-maps { display: block; background: #2180a8; color: white; text-align: center; padding: 6px; margin-top: 8px; border-radius: 4px; text-decoration: none; font-size: 12px; }
+        /* Popup Styling */
+        .popup-content { width: 180px; font-size: 11px; }
+        .popup-content img { width: 100%; height: 100px; object-fit: cover; border-radius: 4px; margin: 5px 0; background: #eee; }
+        .btn-maps { display: block; background: var(--primary); color: white; text-align: center; padding: 5px; border-radius: 3px; text-decoration: none; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="map"></div>
+    <!-- 1. HEADER -->
+    <div class="app-header">
+        <a href="../../index.html" class="header-icon"><i class="fas fa-arrow-left"></i></a>
+        <h1>PETA SEBARAN</h1>
+        <div class="header-icon"></div>
+    </div>
 
-    <!-- 1. Tombol Toggle (Biar ga menuhin layar) -->
-    <button class="toggle-btn" onclick="togglePanel()">
-        <i class="fas fa-filter"></i> Filter & Cari
-    </button>
+    <!-- 2. MAP AREA -->
+    <div id="map-wrapper">
+        <div id="map"></div>
 
-    <!-- 2. Panel Filter (Bisa disembunyikan) -->
-    <div class="filter-panel panel-hidden" id="panel">
-        <div class="filter-group">
-            <label>📅 PERIODE MINGGU</label>
-            <select id="fWeek">
-                <option value="all">Semua Data</option>
-            </select>
+        <!-- Tombol Filter -->
+        <button class="filter-toggle" onclick="toggleFilter()">
+            <i class="fas fa-filter"></i> Filter
+        </button>
+
+        <!-- Panel Filter -->
+        <div id="filterPanel" class="filter-panel">
+            <div class="filter-group">
+                <label>MINGGU KE-</label>
+                <select id="fWeek"><option value="all">Semua Data</option></select>
+            </div>
+            <div class="filter-group">
+                <label>KATEGORI</label>
+                <select id="fKat"><option value="all">Semua Kategori</option></select>
+            </div>
+            <div class="filter-group">
+                <label>CARI</label>
+                <input type="text" id="fSearch" placeholder="Lokasi / Pelapor..." onkeyup="render()">
+            </div>
+            <div style="text-align:right; font-size:10px; color:#666">
+                <span id="countDisplay">0</span> data ditemukan
+            </div>
         </div>
-        <div class="filter-group">
-            <label>📋 KATEGORI</label>
-            <select id="fKat">
-                <option value="all">Semua Kategori</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label>🔍 CARI LOKASI / KETERANGAN</label>
-            <input type="text" id="fSearch" placeholder="Nama jalan, kelurahan..." onkeyup="render()">
-        </div>
-        <div style="text-align: right; font-size: 11px; color: #888; margin-top: 5px;">
-            <span id="countDisplay">0</span> data ditampilkan
+
+        <!-- Stats Kecil -->
+        <div class="map-stats">
+            Total Laporan: <span id="totalAll" style="color:var(--primary)">0</span>
         </div>
     </div>
 
-    <!-- Stats Bar -->
-    <div class="stats-bar">
-        <div class="stats-item">Total: <span id="totalAll">0</span></div>
-        <div class="stats-item">Minggu Ini: <span id="totalWeek">0</span></div>
-    </div>
+    <!-- 3. NAVBAR (TETAP ADA) -->
+    <nav class="bottom-nav">
+        <a href="../../index.html" class="nav-item"><i class="fas fa-house"></i>Home</a>
+        <a href="index.html" class="nav-item active"><i class="fas fa-map-location-dot"></i>Peta</a>
+        <a href="../operator/index.html" class="nav-item"><i class="fas fa-plus-circle"></i>Lapor</a>
+    </nav>
 
-    <!-- Legend -->
-    <div class="legend">
-        <div style="font-weight:bold; margin-bottom:5px;">Legenda</div>
-        <div id="legendContent"></div>
-    </div>
-
-    <!-- Loading -->
-    <div class="loading" id="loader"><i class="fas fa-spinner fa-spin"></i> Memuat Data...</div>
-
+    <!-- SCRIPTS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // --- CONFIG ---
+        // --- CONFIG & UTILS ---
         const map = L.map('map').setView([1.68, 101.44], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        const COLORS = {
-            "Bencana": "#d32f2f",      // Merah
-            "Infrastruktur": "#f57c00", // Orange
-            "Banjir": "#0288d1",        // Biru
-            "Kamtibmas": "#7b1fa2",     // Ungu
-            "Lampu Jalan": "#fbc02d",   // Kuning
-            "Sampah": "#388e3c",        // Hijau
-            "Lainnya": "#616161"        // Abu
-        };
-
         let RAW_DATA = [];
         let MARKERS = [];
+        const COLORS = {
+            "Bencana": "red", "Infrastruktur": "orange", "Banjir": "blue",
+            "Kamtibmas": "purple", "Lainnya": "gray"
+        };
 
-        // --- UTILS ---
-        function togglePanel() {
-            document.getElementById('panel').classList.toggle('panel-hidden');
+        function toggleFilter() {
+            document.getElementById('filterPanel').classList.toggle('hidden');
         }
 
-        // Parsing Tanggal yang LEBIH KUAT (Handle DD/MM/YYYY dan YYYY-MM-DD)
         function getWeekStr(dateStr) {
-            if(!dateStr) return "Tanggal Invalid";
             try {
+                if(!dateStr) return "Unknown";
                 let d;
-                // Cek format DD/MM/YYYY
                 if(dateStr.includes('/')) {
                     const [day, month, year] = dateStr.split(' ')[0].split('/');
                     d = new Date(`${year}-${month}-${day}`);
                 } else {
                     d = new Date(dateStr);
                 }
+                if(isNaN(d)) return "Unknown";
                 
-                if(isNaN(d)) return "Tanggal Invalid";
-
-                // Hitung Minggu ke-X
-                d.setHours(0,0,0,0);
-                d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-                const yearStart = new Date(d.getFullYear(),0,1);
-                const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
-                return `Minggu ${weekNo} (${d.getFullYear()})`;
-            } catch(e) {
-                return "Tanggal Invalid";
-            }
+                // Hitung Minggu
+                const oneJan = new Date(d.getFullYear(),0,1);
+                const numberOfDays = Math.floor((d - oneJan) / (24 * 60 * 60 * 1000));
+                const week = Math.ceil((d.getDay() + 1 + numberOfDays) / 7);
+                return `Minggu ${week} (${d.getFullYear()})`;
+            } catch(e) { return "Unknown"; }
         }
 
         // --- MAIN LOGIC ---
-        async function init() {
+        async function loadData() {
             try {
-                // Fetch Data
-                const req = await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec");
-                const res = await req.json();
-                RAW_DATA = res.laporan || [];
+                const res = await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec");
+                const json = await res.json();
+                RAW_DATA = json.laporan || [];
 
                 // 1. Populate Filters
                 const weeks = new Set();
                 const cats = new Set();
-                let thisWeekCount = 0;
-                const currentWeekStr = getWeekStr(new Date().toLocaleDateString('en-GB')); // Format DD/MM/YYYY
-
+                
                 RAW_DATA.forEach(row => {
-                    const w = getWeekStr(row[0]); // row[0] = timestamp
-                    weeks.add(w);
-                    cats.add(row[2]); // row[2] = kategori
-                    if(w === currentWeekStr) thisWeekCount++;
+                    weeks.add(getWeekStr(row[0]));
+                    cats.add(row[2]);
                 });
 
-                // Isi Select Minggu
                 const fWeek = document.getElementById('fWeek');
                 Array.from(weeks).sort().reverse().forEach(w => {
                     let opt = document.createElement('option');
-                    opt.value = w;
-                    opt.innerText = w + (w === currentWeekStr ? " (Minggu Ini)" : "");
-                    fWeek.appendChild(opt);
+                    opt.value = w; opt.text = w; fWeek.appendChild(opt);
                 });
 
-                // Isi Select Kategori
                 const fKat = document.getElementById('fKat');
                 Array.from(cats).sort().forEach(c => {
                     let opt = document.createElement('option');
-                    opt.value = c;
-                    opt.innerText = c;
-                    fKat.appendChild(opt);
+                    opt.value = c; opt.text = c; fKat.appendChild(opt);
                 });
 
-                // Isi Stats & Legend
                 document.getElementById('totalAll').innerText = RAW_DATA.length;
-                document.getElementById('totalWeek').innerText = thisWeekCount;
-                renderLegend(cats);
-
-                // Render Awal
-                document.getElementById('loader').style.display = 'none';
-                
-                // Default: Buka panel filter biar user tau ada filter, user bisa tutup sendiri
-                document.getElementById('panel').classList.remove('panel-hidden');
-                
                 render();
 
-            } catch(e) {
-                alert("Gagal memuat data: " + e.message);
-            }
+            } catch(e) { console.error(e); }
         }
 
         function render() {
-            // Hapus marker lama
             MARKERS.forEach(m => map.removeLayer(m));
             MARKERS = [];
 
-            // Ambil value filter
-            const valWeek = document.getElementById('fWeek').value;
-            const valKat = document.getElementById('fKat').value;
-            const valSearch = document.getElementById('fSearch').value.toLowerCase();
-
+            const w = document.getElementById('fWeek').value;
+            const k = document.getElementById('fKat').value;
+            const s = document.getElementById('fSearch').value.toLowerCase();
             let count = 0;
 
             RAW_DATA.forEach(row => {
-                // row: [timestamp, pelapor, kategori, lokasi, foto, keterangan]
                 const [time, nama, kat, locRaw, foto, ket] = row;
                 
-                // Cek Filter
-                const w = getWeekStr(time);
-                if (valWeek !== 'all' && w !== valWeek) return;
-                if (valKat !== 'all' && kat !== valKat) return;
+                // Filter Logic
+                if (w !== 'all' && getWeekStr(time) !== w) return;
+                if (k !== 'all' && kat !== k) return;
                 
-                // Cek Search (Lokasi atau Keterangan atau Pelapor)
-                const textSearch = (locRaw + " " + (ket||"") + " " + nama).toLowerCase();
-                if (valSearch && !textSearch.includes(valSearch)) return;
+                const txt = (locRaw + " " + nama + " " + (ket||"")).toLowerCase();
+                if (s && !txt.includes(s)) return;
 
-                // Parse Lokasi
+                // Marker Logic
                 const coord = locRaw.match(/(-?\d+\.\d+),(-?\d+\.\d+)/);
-                if(!coord) return;
+                if (!coord) return;
 
-                // Buat Marker
                 const lat = parseFloat(coord[1]);
                 const lng = parseFloat(coord[2]);
-                const color = COLORS[kat] || COLORS["Lainnya"];
-                
+                const color = COLORS[kat] || "gray";
+
                 const icon = L.divIcon({
                     className: 'custom-pin',
-                    html: `<div style="background:${color};width:24px;height:24px;border-radius:50%;border:2px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.3);"></div>`
+                    html: `<div style="background:${color};width:20px;height:20px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`
                 });
 
                 const marker = L.marker([lat, lng], {icon: icon})
                     .bindPopup(`
                         <div class="popup-content">
-                            <div class="popup-row" style="color:${color};font-weight:bold;">${kat.toUpperCase()}</div>
-                            <div class="popup-row"><b>Pelapor:</b> ${nama}</div>
-                            <div class="popup-row"><b>Waktu:</b> ${time}</div>
-                            <div class="popup-row"><b>Ket:</b> ${ket || '-'}</div>
-                            ${foto ? `<img src="${foto}" class="popup-img" onerror="this.style.display='none'">` : ''}
+                            <b style="color:${color}">${kat}</b><br>
+                            <small>${time}</small><br>
+                            <b>${nama}</b>
+                            ${foto ? `<img src="${foto}">` : ''}
                             <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-maps">Buka Maps</a>
                         </div>
                     `);
@@ -315,29 +273,16 @@
 
             document.getElementById('countDisplay').innerText = count;
             
-            // Auto Zoom jika ada hasil
             if(MARKERS.length > 0) {
                 const group = new L.featureGroup(MARKERS);
                 map.fitBounds(group.getBounds().pad(0.1));
             }
         }
 
-        function renderLegend(cats) {
-            const el = document.getElementById('legendContent');
-            let html = '';
-            cats.forEach(c => {
-                const color = COLORS[c] || COLORS["Lainnya"];
-                html += `<div class="legend-item"><span class="dot" style="background:${color}"></span>${c}</div>`;
-            });
-            el.innerHTML = html;
-        }
-
-        // Event Listener buat Select
         document.getElementById('fWeek').addEventListener('change', render);
         document.getElementById('fKat').addEventListener('change', render);
 
-        // Start
-        init();
+        loadData();
     </script>
 </body>
 </html>
