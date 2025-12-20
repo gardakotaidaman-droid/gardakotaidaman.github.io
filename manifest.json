@@ -1,18 +1,19 @@
 {
-  "name": "Garda Kota Idaman",
-  "short_name": "GardaKota",
-  "start_url": "/",
+  "name": "Garda Dumai Kota",
+  "short_name": "GardaDK",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0d6efd",
+  "background_color": "#212529",
+  "theme_color": "#ef6c00",
+  "description": "Command Center Garda Dumai Kota",
   "icons": [
     {
-      "src": "assets/img/icon-192.png",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/img/icon-512.png",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png",
       "sizes": "512x512",
       "type": "image/png"
     }
