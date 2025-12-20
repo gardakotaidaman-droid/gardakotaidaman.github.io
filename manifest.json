@@ -1,21 +1,46 @@
 {
-  "name": "Garda Dumai Kota",
-  "short_name": "GardaDK",
-  "start_url": ".",
+  "name": "Command Center Garda Dumai Kota",
+  "short_name": "GardaKota",
+  "description": "Command Center Garda Dumai Kota - Monitoring Gempa, Cuaca & SOS Darurat Real-time",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#212529",
-  "theme_color": "#ef6c00",
-  "description": "Command Center Garda Dumai Kota",
+  "orientation": "portrait-primary",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "categories": ["government", "utilities", "news"],
   "icons": [
     {
-      "src": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png",
+      "src": "assets/img/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_Kota_Dumai.png",
+      "src": "assets/img/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "SOS Darurat",
+      "short_name": "SOS",
+      "description": "Akses cepat SOS Darurat",
+      "url": "/modul/aksi/index.html"
+    },
+    {
+      "name": "Peta",
+      "short_name": "Peta",
+      "description": "Lihat peta lokasi",
+      "url": "/modul/peta/index.html"
+    },
+    {
+      "name": "Lapor",
+      "short_name": "Lapor",
+      "description": "Buat laporan",
+      "url": "/modul/operator/index.html"
     }
   ]
 }
