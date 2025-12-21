@@ -10,250 +10,61 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        html, body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
+        html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+        body { display: flex; flex-direction: column; background: var(--dark); }
+        .app-header { flex: 0 0 auto; z-index: 2000; }
+        #map-wrapper { flex: 1 1 auto; position: relative; width: 100%; background: #ddd; overflow: hidden; }
+        #map { width: 100%; height: 100%; z-index: 1; }
+        .bottom-nav { flex: 0 0 auto; z-index: 2000; }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            background: var(--dark);
-        }
-
-        .app-header {
-            flex: 0 0 auto;
-            z-index: 2000;
-        }
-
-        #map-wrapper {
-            flex: 1 1 auto;
-            position: relative;
-            width: 100%;
-            background: #ddd;
-            overflow: hidden;
-        }
-
-        #map {
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        .bottom-nav {
-            flex: 0 0 auto;
-            z-index: 2000;
-        }
-
-        /* Filter Toggle Button */
-        .filter-toggle {
-            position: absolute;
-            top: 10px; left: 10px;
-            z-index: 1000;
-            background: var(--primary);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            border: none;
-            cursor: pointer;
-        }
-
-        /* Filter Panel */
-        .filter-panel {
-            position: absolute;
-            top: 50px; left: 10px;
-            width: 280px;
-            max-width: calc(100vw - 30px);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-        }
-
-        .hidden {
-            transform: translateY(-20px);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .filter-group { margin-bottom: 10px; }
-        .filter-group label { 
-            display: block; 
-            font-size: 10px; 
-            font-weight: bold; 
-            color: #666; 
-            margin-bottom: 3px; 
-        }
-        .filter-group select, .filter-group input {
-            width: 100%; 
-            padding: 6px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            font-size: 12px;
-        }
-
-        /* Stats Bottom Left */
         .map-stats {
-            position: absolute; 
-            bottom: 10px; 
-            left: 10px;
-            background: white; 
-            padding: 8px 12px; 
-            border-radius: 8px;
-            font-size: 11px; 
-            font-weight: bold; 
-            z-index: 900;
+            position: absolute; bottom: 10px; left: 10px;
+            background: white; padding: 8px 12px; border-radius: 8px;
+            font-size: 11px; font-weight: bold; z-index: 900;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* LEGENDA - Bottom Right */
-        .legend-box {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 900;
-            font-size: 11px;
-            max-width: 150px;
+        .legend {
+            position: absolute; bottom: 10px; right: 10px;
+            background: white; padding: 10px; border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 900;
+            font-size: 10px; max-width: 140px;
         }
-
-        .legend-box strong {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 12px;
-            color: #333;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        .legend-item:last-child {
-            margin-bottom: 0;
-        }
-
+        .legend strong { display: block; margin-bottom: 8px; font-size: 11px; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 5px; }
         .legend-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            margin-right: 8px;
-            flex-shrink: 0;
-            border: 2px solid white;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            width: 12px; height: 12px; border-radius: 50%; margin-right: 6px;
+            flex-shrink: 0; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        /* Popup */
-        .popup-content { 
-            width: 200px; 
-            font-size: 12px; 
-            line-height: 1.5;
-        }
-        
-        .popup-content b {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 13px;
-        }
-        
-        .popup-content img { 
-            width: 100%; 
-            height: 120px; 
-            object-fit: cover; 
-            border-radius: 4px; 
-            margin: 8px 0; 
-            background: #eee; 
-        }
-        
-        .btn-maps { 
-            display: block; 
-            background: var(--primary); 
-            color: white; 
-            text-align: center; 
-            padding: 6px; 
-            border-radius: 4px; 
-            text-decoration: none; 
-            margin-top: 8px; 
-            font-weight: 600;
-            font-size: 11px;
-        }
-
-        /* Loading */
-        .loading-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            color: white;
-            font-size: 14px;
+        .loading {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); display: flex; align-items: center;
+            justify-content: center; z-index: 2000; color: white; font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
     <div class="app-header">
         <a href="../../index.html" class="header-icon"><i class="fas fa-arrow-left"></i></a>
         <h1>PETA SEBARAN</h1>
         <div class="header-icon"></div>
     </div>
 
-    <!-- MAP AREA -->
     <div id="map-wrapper">
         <div id="map"></div>
 
-        <!-- Loading -->
-        <div id="loading" class="loading-overlay">
+        <div id="loading" class="loading">
             <div><i class="fas fa-spinner fa-spin"></i> Memuat Data...</div>
         </div>
 
-        <!-- Filter Button -->
-        <button class="filter-toggle" onclick="toggleFilter()">
-            <i class="fas fa-filter"></i> Filter
-        </button>
-
-        <!-- Filter Panel -->
-        <div id="filterPanel" class="filter-panel hidden">
-            <div class="filter-group">
-                <label>📅 MINGGU</label>
-                <select id="fWeek"><option value="all">Semua Data</option></select>
-            </div>
-            <div class="filter-group">
-                <label>📋 KATEGORI</label>
-                <select id="fKat"><option value="all">Semua Kategori</option></select>
-            </div>
-            <div class="filter-group">
-                <label>🔍 CARI</label>
-                <input type="text" id="fSearch" placeholder="Lokasi / Pelapor..." onkeyup="render()">
-            </div>
-            <div style="text-align:right; font-size:10px; color:#666; margin-top:5px;">
-                <span id="countDisplay">0</span> ditampilkan
-            </div>
-        </div>
-
-        <!-- Stats -->
         <div class="map-stats">
-            Total: <span id="totalAll" style="color:var(--primary)">0</span> laporan
+            <span id="statsText">Memuat...</span>
         </div>
 
-        <!-- LEGENDA -->
-        <div class="legend-box">
-            <strong>📍 Legenda</strong>
+        <div class="legend">
+            <strong>📍 Kategori</strong>
             <div class="legend-item">
                 <div class="legend-dot" style="background: #d32f2f;"></div>
                 <span>Bencana</span>
@@ -277,236 +88,131 @@
         </div>
     </div>
 
-    <!-- NAVBAR -->
     <nav class="bottom-nav">
         <a href="../../index.html" class="nav-item"><i class="fas fa-house"></i>Home</a>
         <a href="index.html" class="nav-item active"><i class="fas fa-map-location-dot"></i>Peta</a>
         <a href="../operator/index.html" class="nav-item"><i class="fas fa-plus-circle"></i>Lapor</a>
     </nav>
 
-    <!-- SCRIPTS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        console.log("🗺️ === PETA SCRIPT START ===");
+        const map = L.map('map').setView([1.68, 101.44], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        setTimeout(() => map.invalidateSize(), 300);
 
-        // Inisialisasi Map
-        const map = L.map('map', {
-            center: [1.68, 101.44],
-            zoom: 13,
-            zoomControl: true
-        });
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap',
-            maxZoom: 19
-        }).addTo(map);
-
-        // Fix size setelah load
-        setTimeout(() => {
-            map.invalidateSize();
-            console.log("✅ Map invalidated");
-        }, 300);
-
-        let RAW_DATA = [];
-        let MARKERS = [];
-        
         const COLORS = {
-            "Bencana": "#d32f2f",
-            "Infrastruktur": "#f57c00",
-            "Banjir": "#0288d1",
-            "Kamtibmas": "#7b1fa2",
-            "Lampu Jalan": "#fbc02d",
-            "Penumpukan Sampah": "#388e3c",
-            "Lainnya": "#616161"
+            "Bencana": "#d32f2f", "Infrastruktur": "#f57c00", "Banjir": "#0288d1",
+            "Kamtibmas": "#7b1fa2", "Lainnya": "#388e3c"
         };
-
-        function toggleFilter() {
-            document.getElementById('filterPanel').classList.toggle('hidden');
-        }
-
-        function getWeekStr(dateStr) {
-            try {
-                if(!dateStr) return "Unknown";
-                let d;
-                
-                if(dateStr.includes('/')) {
-                    const parts = dateStr.split(' ');
-                    const [day, month, year] = parts[0].split('/');
-                    d = new Date(`${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`);
-                } else {
-                    d = new Date(dateStr);
-                }
-                
-                if(isNaN(d)) return "Unknown";
-                
-                const start = new Date(d.getFullYear(), 0, 1);
-                const diff = d - start;
-                const oneWeek = 1000 * 60 * 60 * 24 * 7;
-                const week = Math.ceil(diff / oneWeek);
-                
-                return `Minggu ${week} (${d.getFullYear()})`;
-            } catch(e) { 
-                return "Unknown"; 
-            }
-        }
 
         async function loadData() {
             try {
-                console.log("📡 Fetching data from Google Sheets...");
                 const res = await fetch("https://script.google.com/macros/s/AKfycbwCKYJOQyULCxf5skOQ5AC9BpgR9beG3Uw3M1iMTEOoUgkRPvtGlybwK9iz19PGD0P5ww/exec");
                 const json = await res.json();
+                const data = json.laporan || [];
                 
-                console.log("📦 Raw response:", json);
+                console.log(`✅ Loaded ${data.length} laporan`);
                 
-                RAW_DATA = json.laporan || [];
-                
-                console.log(`✅ Loaded ${RAW_DATA.length} laporan`);
-
-                if(RAW_DATA.length > 0) {
-                    console.log("📋 Sample laporan[0]:", RAW_DATA[0]);
-                    console.log("📋 Format: [timestamp, nama, kategori, lokasi, foto, keterangan]");
-                }
-
-                // Populate filters
-                const weeks = new Set();
-                const cats = new Set();
-                
-                RAW_DATA.forEach((row, idx) => {
-                    weeks.add(getWeekStr(row[0]));
-                    cats.add(row[2]);
-                });
-
-                console.log("📅 Weeks:", Array.from(weeks));
-                console.log("📋 Categories:", Array.from(cats));
-
-                const fWeek = document.getElementById('fWeek');
-                Array.from(weeks).sort().reverse().forEach(w => {
-                    const opt = document.createElement('option');
-                    opt.value = w; 
-                    opt.text = w; 
-                    fWeek.appendChild(opt);
-                });
-
-                const fKat = document.getElementById('fKat');
-                Array.from(cats).sort().forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c; 
-                    opt.text = c; 
-                    fKat.appendChild(opt);
-                });
-
-                document.getElementById('totalAll').innerText = RAW_DATA.length;
-                document.getElementById('loading').style.display = 'none';
-                
-                render();
-
-            } catch(e) { 
-                console.error("❌ ERROR:", e);
-                alert("Gagal memuat data: " + e.message);
-                document.getElementById('loading').style.display = 'none';
-            }
-        }
-
-        function render() {
-            console.log("🎯 === RENDER START ===");
-            
-            MARKERS.forEach(m => map.removeLayer(m));
-            MARKERS = [];
-
-            const w = document.getElementById('fWeek').value;
-            const k = document.getElementById('fKat').value;
-            const s = document.getElementById('fSearch').value.toLowerCase();
-            
-            console.log("🔍 Filters:", {week: w, cat: k, search: s});
-
-            let count = 0;
-            let skipped = 0;
-
-            RAW_DATA.forEach((row, idx) => {
-                // Format: [timestamp, nama, kategori, lokasi, foto, keterangan]
-                const time = row[0];
-                const nama = row[1];
-                const kat = row[2];
-                const locRaw = row[3];
-                const foto = row[4];
-                const ket = row[5] || "";
-                
-                // Filter
-                if (w !== 'all' && getWeekStr(time) !== w) return;
-                if (k !== 'all' && kat !== k) return;
-                
-                const txt = (locRaw + " " + nama + " " + ket).toLowerCase();
-                if (s && !txt.includes(s)) return;
-
-                // Parse koordinat - support berbagai format
-                // Format 1: https://www.google.com/maps/place/@1.234,101.234,14z
-                // Format 2: @1.234,101.234
-                // Format 3: 1.234,101.234
-                let coord = locRaw.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-                
-                if(!coord) {
-                    coord = locRaw.match(/(-?\d+\.\d+),\s*(-?\d+\.\d+)/);
-                }
-                
-                if (!coord) {
-                    console.warn(`⚠️ Row ${idx}: No coords found in "${locRaw}"`);
-                    skipped++;
+                if(data.length === 0) {
+                    alert("Data kosong");
+                    document.getElementById('loading').style.display = 'none';
                     return;
                 }
 
-                const lat = parseFloat(coord[1]);
-                const lng = parseFloat(coord[2]);
-                
-                if(isNaN(lat) || isNaN(lng)) {
-                    console.warn(`⚠️ Row ${idx}: Invalid coords lat=${lat} lng=${lng}`);
-                    skipped++;
-                    return;
-                }
-
-                console.log(`✓ Row ${idx}: Marker at [${lat}, ${lng}] - ${kat}`);
-
-                const color = COLORS[kat] || COLORS["Lainnya"];
-
-                const icon = L.divIcon({
-                    className: 'custom-marker-pin',
-                    html: `<div style="background:${color};width:26px;height:26px;border-radius:50%;border:3px solid white;box-shadow:0 3px 6px rgba(0,0,0,0.4);"></div>`,
-                    iconSize: [26, 26],
-                    iconAnchor: [13, 13],
-                    popupAnchor: [0, -13]
+                // DEBUG: Print semua kolom dari row pertama
+                console.log("🔍 DEBUG KOLOM:");
+                data[0].forEach((col, idx) => {
+                    console.log(`  [${idx}] = "${col}"`);
                 });
 
-                const marker = L.marker([lat, lng], {icon: icon})
-                    .bindPopup(`
-                        <div class="popup-content">
-                            <b style="color:${color}">${kat}</b>
-                            <small style="color:#666">${time}</small><br>
-                            <strong>${nama}</strong>
-                            ${ket ? `<div style="font-size:11px;margin-top:5px;color:#555">${ket}</div>` : ''}
-                            ${foto ? `<img src="${foto}" onerror="this.style.display='none'">` : ''}
-                            <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-maps">
-                                <i class="fas fa-map-marker-alt"></i> Buka di Maps
-                            </a>
-                        </div>
-                    `);
-                
-                marker.addTo(map);
-                MARKERS.push(marker);
-                count++;
-            });
+                let markerCount = 0;
 
-            console.log(`✅ Rendered: ${count} markers, Skipped: ${skipped}`);
-            document.getElementById('countDisplay').innerText = count;
-            
-            if(MARKERS.length > 0) {
-                const group = new L.featureGroup(MARKERS);
-                map.fitBounds(group.getBounds().pad(0.1), {maxZoom: 15});
-            } else {
-                console.warn("⚠️ NO MARKERS to display!");
+                data.forEach((row, idx) => {
+                    // CARI kolom yang mengandung koordinat
+                    let lat, lng, lokasi = "";
+                    
+                    for(let i = 0; i < row.length; i++) {
+                        const col = String(row[i] || "");
+                        
+                        // Cari pattern koordinat di kolom manapun
+                        let match = col.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                        if(!match) match = col.match(/place\/(-?\d+\.\d+),(-?\d+\.\d+)/);
+                        if(!match) match = col.match(/q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+                        
+                        if(match) {
+                            lat = parseFloat(match[1]);
+                            lng = parseFloat(match[2]);
+                            lokasi = col;
+                            console.log(`✓ Row ${idx}: Found coords in column [${i}]`);
+                            break;
+                        }
+                    }
+
+                    if(!lat || !lng || isNaN(lat) || isNaN(lng)) {
+                        console.warn(`⚠️ Row ${idx}: No valid coords found`);
+                        return;
+                    }
+
+                    // Ambil data lain
+                    const timestamp = row[0] || "";
+                    const nama = row[1] || "Pelapor";
+                    const kat = row[2] || "Lainnya";
+                    const foto = row[4] || "";
+
+                    const color = COLORS[kat] || COLORS["Lainnya"];
+                    
+                    const icon = L.divIcon({
+                        className: '',
+                        html: `<div style="background:${color};width:28px;height:28px;border-radius:50%;border:3px solid white;box-shadow:0 3px 6px rgba(0,0,0,0.5);"></div>`,
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14]
+                    });
+
+                    const marker = L.marker([lat, lng], {icon: icon})
+                        .bindPopup(`
+                            <div style="width:200px;font-size:11px;line-height:1.4;">
+                                <b style="color:${color};font-size:13px;">${kat}</b><br>
+                                <small style="color:#888">${timestamp}</small><br>
+                                <strong>${nama}</strong>
+                                ${foto ? `<img src="${foto}" style="width:100%;height:100px;object-fit:cover;border-radius:4px;margin:8px 0;background:#eee;" onerror="this.style.display='none'">` : ''}
+                                <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="display:block;background:${color};color:white;text-align:center;padding:6px;border-radius:4px;text-decoration:none;margin-top:8px;font-weight:600;">
+                                    <i class="fas fa-map-marker-alt"></i> Buka Maps
+                                </a>
+                            </div>
+                        `);
+                    
+                    marker.addTo(map);
+                    markerCount++;
+                });
+
+                console.log(`✅ ${markerCount} markers rendered`);
+                
+                document.getElementById('statsText').innerText = `${markerCount} Laporan Ditampilkan`;
+                document.getElementById('loading').style.display = 'none';
+
+                // Auto zoom
+                if(markerCount > 0) {
+                    setTimeout(() => {
+                        const bounds = [];
+                        map.eachLayer(layer => {
+                            if(layer instanceof L.Marker) {
+                                bounds.push(layer.getLatLng());
+                            }
+                        });
+                        if(bounds.length > 0) {
+                            map.fitBounds(L.latLngBounds(bounds).pad(0.1), {maxZoom: 15});
+                        }
+                    }, 500);
+                } else {
+                    alert("❌ Tidak ada marker yang bisa ditampilkan.\n\nPastikan data laporan memiliki koordinat GPS!");
+                }
+
+            } catch(e) {
+                console.error(e);
+                alert("Error: " + e.message);
+                document.getElementById('loading').style.display = 'none';
             }
         }
-
-        document.getElementById('fWeek').addEventListener('change', render);
-        document.getElementById('fKat').addEventListener('change', render);
 
         loadData();
     </script>
